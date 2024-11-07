@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:project/controller/logincontroller.dart';
 import 'package:project/core/constant/color.dart';
 import 'package:project/core/function/validation.dart';
 import 'package:project/view/widget/auth/textformfiledauth.dart';
+import '../../controller/auth_controller/login_controller.dart';
 import '../widget/auth/materialbuttonauth.dart';
 import '../widget/auth/row.dart';
+
 
 class Loginpage extends StatelessWidget {
   Logincontroll controller = Get.put(Logincontroll());
