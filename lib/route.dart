@@ -1,10 +1,11 @@
-import 'package:flutter/cupertino.dart';
-import 'package:project/view/screen/home_page/home_page.dart';
-import 'package:project/view/screen/login.dart';
+import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:project/view/screen/Auth/login.dart';
+import 'package:project/view/screen/Auth/register.dart';
 
-Map<String , Widget Function(BuildContext)> routs = {
+import 'core/constant/routes.dart';
 
-  "/Login" : (context) =>  Loginpage(),
-  "/HomePage" : (context) =>  HomePage(),
+List<GetPage<dynamic>>? routes = [
+  GetPage(name: AppRoute.login, page: ()=> Loginpage()),
+  GetPage(name: AppRoute.register, page: ()=> Registerpage()),
 
-};
+];

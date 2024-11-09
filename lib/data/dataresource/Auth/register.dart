@@ -1,5 +1,5 @@
-import '../../applink.dart';
-import '../../core/class/curd.dart';
+import '../../../applink.dart';
+import '../../../core/class/crud.dart';
 
 class RegisterData {
   Crud crud;

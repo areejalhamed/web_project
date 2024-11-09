@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:project/data/dataresource/register.dart';
+import 'package:project/data/dataresource/Auth/register.dart';
 import '../../core/class/staterequest.dart';
 import '../../core/function/handlingdata.dart';
 
@@ -12,14 +12,16 @@ abstract class Registercontroller extends GetxController
 }
 class Registercontroll extends Registercontroller {
 
-
+  RegisterData registerData =RegisterData(Get.find());
   GlobalKey<FormState> formstate = GlobalKey<FormState>();
+  StatusRequest? statusRequest ;
+  bool isshowpassword = true;
+
   late TextEditingController name;
   late TextEditingController email;
   late TextEditingController password;
-  StatusRequest? statusRequest ;
-  bool isshowpassword = true;
-  RegisterData registerData =RegisterData(Get.find());
+
+
 
   showpassword() {
     isshowpassword = isshowpassword == true ? false : true;
@@ -34,15 +36,29 @@ class Registercontroll extends Registercontroller {
       statusRequest = StatusRequest.loading ;
       update();
       var response = await  registerData.postdata( name.text , email.text , password.text );
-      print("-----------------------------controller $response--------------------");
+      print("-----------------------------controller file --------------------");
+      print(response);
+      print('-------------------------------------------------------------');
       statusRequest=handlingData(response);
+
+
+      //لاتاكد من الشرط
+      print('--------------------------1-----------------------------------');
+      print("---$statusRequest------");
+      print(response["status"]);
+      print('--------------------------2-----------------------------------');
+
+
+
       if(StatusRequest.success == statusRequest)
       {
-        if(response["status"] == "Success" ){
-         print('ssssssssssssssssssssssssssss');
+        if(response["status"] == null ){
+          Get.defaultDialog( title: "Welcom" , middleText: " Your account has been registered successfully ");
         }
         else
-        {  print('fffffffffffffffffffff');
+        {  Get.defaultDialog(title: "warning" , middleText: "Username or Email Already Exists ");
+           statusRequest = StatusRequest.failure;
+           print("-----------$statusRequest---------");
         }
       }
       update();
