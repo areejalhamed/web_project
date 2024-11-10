@@ -22,7 +22,6 @@ class ListTitleHomePage extends StatelessWidget {
       title: Text(text),
       onTap: () {
         onTap();
-        Navigator.pop(context);
       },
     );
   }

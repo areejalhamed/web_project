@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:project/route.dart';
+import 'package:project/view/screen/home_page/home_page.dart';
 import 'package:project/view/screen/login.dart';
 import 'package:project/view/screen/register.dart';
 import 'bindings/intialbindings.dart';
@@ -22,7 +24,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Loginpage(),
+      home: HomePage(),
+      routes: routs,
       initialBinding: initalBindings(),
     );
   }

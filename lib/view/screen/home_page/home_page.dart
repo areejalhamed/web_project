@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:get/get.dart';
 import '../../../core/constant/color.dart';
 import '../../widget/home_page/list_title.dart';
 
@@ -14,6 +14,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   Color _borderColor = Colors.grey;
+
 
   @override
   Widget build(BuildContext context) {
@@ -47,12 +48,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 ListTitleHomePage(
-                  onTap: () {},
-                  text: 'Home Page',
-                  icon: const Icon(Icons.home),
-                ),
-                ListTitleHomePage(
-                  onTap: () {},
+                  onTap: () {
+                    Get.toNamed("/ShowConfirmationDialog");
+                  },
                   text: 'Create a group',
                   icon: const Icon(Icons.create_outlined),
                 ),
