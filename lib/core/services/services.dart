@@ -11,8 +11,6 @@ class   MyServices extends GetxService{
     return this ;
   }
 }
-
-
 initialServices() async {
   await Get.putAsync(() => MyServices().init()) ;
 }

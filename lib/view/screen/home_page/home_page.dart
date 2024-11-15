@@ -1,7 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:project/applink.dart';
+import 'package:project/core/constant/routes.dart';
+import 'package:project/view/screen/home_page/view_Group.dart';
+import '../../../controller/home_page_controller/get_group_controller.dart';
+import '../../../core/class/crud.dart';
+import '../../../core/class/staterequest.dart';
 import '../../../core/constant/color.dart';
+import '../../../data/dataresource/home_page_data/get_group_data.dart';
 import '../../widget/home_page/list_title.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,22 +19,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-  Color _borderColor = Colors.grey;
-
-
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(GetAllGroupControllerImp(GetAllGroupData(Crud())));
     return Scaffold(
       body: Row(
         children: <Widget>[
+          // Sidebar for navigation and options
           Container(
             width: 250,
             color: Colors.grey[200],
             child: Column(
               children: <Widget>[
-                DrawerHeader(
-                  decoration: const BoxDecoration(
+                const DrawerHeader(
+                  decoration: BoxDecoration(
                     color: sevenBackColor,
                     borderRadius: BorderRadius.vertical(
                       bottom: Radius.circular(20),
@@ -36,20 +41,18 @@ class _HomePageState extends State<HomePage> {
                   child: SizedBox(
                     width: 250,
                     height: 75,
-                    child: Container(
-                      child: const Text(
-                        'M y _  A c c o u n t',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                        ),
+                    child: Text(
+                      'My _ Account',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
                       ),
                     ),
                   ),
                 ),
                 ListTitleHomePage(
                   onTap: () {
-                    Get.toNamed("/ShowConfirmationDialog");
+                    Get.toNamed(AppRoute.showConfirmationDialog);
                   },
                   text: 'Create a group',
                   icon: const Icon(Icons.create_outlined),
@@ -67,6 +70,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
+          // Main content for displaying groups in a grid format
           Expanded(
             child: Column(
               children: [
@@ -75,46 +79,80 @@ class _HomePageState extends State<HomePage> {
                   child: TextField(
                     decoration: InputDecoration(
                       labelText: 'Search ..',
-                      prefixIcon:const Icon(Icons.search, color: fiveBackColor),
-                      labelStyle:const TextStyle(color: fiveBackColor),
+                      prefixIcon: const Icon(Icons.search, color: fiveBackColor),
+                      labelStyle: const TextStyle(color: fiveBackColor),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15.0),
-                        borderSide:const BorderSide(color: fiveBackColor),
+                        borderSide: const BorderSide(color: fiveBackColor),
                       ),
                       focusedBorder: OutlineInputBorder(
-
                         borderRadius: BorderRadius.circular(15.0),
-                        borderSide:const BorderSide(color: sevenBackColor),
+                        borderSide: const BorderSide(color: sevenBackColor),
                       ),
                     ),
                   ),
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // الصورة
-                    Container(
-                      width: 150, // عرض الصورة
-                      height: 150, // ارتفاع الصورة
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage('https://example.com/sunset.jpg'),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    const SizedBox(height: 10), // مساحة بين الصورة والاسم
-                    // اسم الغروب
-                    Text(
-                      'Name Group',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                )
+                Expanded(
+                  child: GetBuilder<GetAllGroupControllerImp>(
+                    builder: (controller) {
+                      if (controller.statusRequest == StatusRequest.loading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (controller.statusRequest == StatusRequest.failure) {
+                        return const Center(child: Text('Failed to load groups'));
+                      } else if (controller.groups.isEmpty) {
+                        return const Center(child: Text('No groups available'));
+                      } else {
+                        return RefreshIndicator(
+                          onRefresh: () async {
+                            await controller.getGroup(); // Refreshes the group data
+                          },
+                          child: GridView.builder(
+                            padding: const EdgeInsets.all(16.0),
+                            itemCount: controller.groups.length,
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 4,
+                              crossAxisSpacing: 16.0,
+                              mainAxisSpacing: 16.0,
+                              childAspectRatio: 3 / 2,
+                            ),
+                            itemBuilder: (context, index) {
+                              var group = controller.groups[index];
+                              return ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.all(16.0),
+                                  backgroundColor: sevenBackColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12.0),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ViewGroup(groupName: group['name'] ?? 'Unnamed Group'),
+                                    ),
+                                  );
+                                },
+                                child: Center(
+                                  child: Text(
+                                    group['name'] ?? 'Unnamed Group',
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              );
+
+                            },
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ),
               ],
             ),
           ),

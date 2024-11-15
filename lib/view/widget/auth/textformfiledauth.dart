@@ -27,7 +27,7 @@ class Textformfieldauth extends StatelessWidget{
     this.iconDatasuffix,
     this.width,
     this.hight,
-    this.onTapicon, }) : super(key: key);
+    this.onTapicon, InputDecoration? decoration, }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
