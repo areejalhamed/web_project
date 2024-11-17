@@ -37,7 +37,7 @@ class ShowConfirmationDialog extends StatelessWidget {
               Textformfieldauth(
                 mycontroller: addGroupController.name,
                 hinttext: 'Enter Group Name',
-                valid: (v) => validateinput(v!, 6, 30),
+                valid: (v) => validateinput(v!, 1 , 30),
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white,

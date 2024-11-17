@@ -6,7 +6,7 @@ class RegisterData {
   RegisterData(this.crud);
 
   Future postData(String name, String email, String password) async {
-    var response = await crud.postWithToken(Applink.register, {
+    var response = await crud.post(Applink.register, {
       "name": name,
       "email": email,
       "password": password,

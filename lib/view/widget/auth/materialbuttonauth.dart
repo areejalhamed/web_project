@@ -17,7 +17,7 @@ class MaterialButtonAuth extends StatelessWidget{
       child: MaterialButton(
         padding:const EdgeInsets.only(left: 65,right: 65,top: 20 ,bottom: 20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        color: sevenBackColor,
+        color: secondBackColor,
         textColor: white,
         onPressed: onPressed,
         child: Text(text , style:const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),), ),

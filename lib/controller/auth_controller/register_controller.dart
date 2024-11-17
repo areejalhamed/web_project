@@ -1,15 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:project/core/constant/color.dart';
 import 'package:project/core/constant/routes.dart';
 import 'package:project/data/dataresource/Auth/register.dart';
 import '../../core/class/staterequest.dart';
 import '../../core/function/handlingdata.dart';
 
 abstract class Registercontroller extends GetxController {
-  Future<void> register(); // تأكد من أن الدالة هنا تعود بـ Future
-  void goToLogin();
-  void goToHomePage();
+  Register();
+  goToLogin();
+  goToHomePage();
 }
 
 class Registercontroll extends Registercontroller {
@@ -30,50 +31,43 @@ class Registercontroll extends Registercontroller {
   }
 
   @override
-  Future<void> register() async {
-    var formdataa = formstate.currentState;
-    if (formdataa != null && formdataa.validate()) {
+   Register() async {
+
+    var formdata = formstate.currentState;
+    if (formdata!.validate()) {
+
       statusRequest = StatusRequest.loading;
       update();
-
       var response = await registerData.postData(name.text, email.text, password.text);
-
       print("-----------------------------controller file --------------------");
-      print(response);
-      print('-------------------------------------------------------------');
+      print('response : $response');
+      statusRequest = handlingData(response);
+      print("statusRequest : $statusRequest------");
+      print('------------------------------------------------------------------');
 
       // تحقق مما إذا كانت الاستجابة تحتوي على بيانات
-      if (response is Map<String, dynamic>) {
-        statusRequest = handlingData(response);
-        print('--------------------------1-----------------------------------');
-        print("---$statusRequest------");
-
-        // تحقق من نجاح التسجيل
+      if (statusRequest == StatusRequest.success ) {
         if (response["success"] == true) {
-          Get.snackbar("Welcome", response["message"]);
           goToHomePage();
-        } else {
-          // إذا كان هناك خطأ في التسجيل
-          Get.defaultDialog(
-              title: "Warning",
-              middleText: response["message"] ?? "An error occurred"
-          );
-          statusRequest = StatusRequest.failure;
         }
-      } else {
-        // إذا كانت الاستجابة ليست خريطة
+      }
+      else {
+        // إذا كان هناك خطأ في التسجيل
         Get.defaultDialog(
-            title: "Error",
-            middleText: "Invalid response format"
+            title: "Warning",
+            backgroundColor: fourBackColor,
+            middleText: "Email Already Exists "
+
         );
         statusRequest = StatusRequest.failure;
       }
-
       update();
-    } else {
-      print('Form validation failed');
     }
+
+
   }
+
+
 
   @override
   void onInit() {

@@ -37,7 +37,7 @@ class Textformfieldauth extends StatelessWidget{
        height: hight,
        margin: const EdgeInsets.symmetric(horizontal:30,vertical: 5),
        child: TextFormField(
-         //validator: valid,
+          validator: valid,
           controller: mycontroller,
           keyboardType: keyboardType ,
           obscureText: obscuretext == null || obscuretext== false ? false : true,
@@ -48,7 +48,7 @@ class Textformfieldauth extends StatelessWidget{
            contentPadding:const  EdgeInsets.only(top: 20,bottom: 20),
            hintStyle:const TextStyle(fontSize: 15),
            enabledBorder: OutlineInputBorder(
-             borderSide:const BorderSide(color: sevenBackColor, width: 2),
+             borderSide:const BorderSide(color: secondBackColor, width: 2),
              borderRadius: BorderRadius.circular(15),
            ),
            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
