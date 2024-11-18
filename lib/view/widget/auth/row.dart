@@ -16,18 +16,22 @@ class Rowauth extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return    Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(text1,style:const TextStyle(color: fiveBackColor,fontWeight: FontWeight.w400,fontSize: 13),),
+        Text(text1,style:const TextStyle(color: fiveBackColor,fontWeight: FontWeight.w400,fontSize: 14),),
         const SizedBox(width: 10,),
         InkWell(onTap: onTap,
             child:Container(
                 decoration: BoxDecoration(
-                    color: white,
+                    color: sevenBackColor,
                     borderRadius: BorderRadius.circular(10)),
 
-                child: Center(child:  Text(text2,style:const TextStyle(color: sevenBackColor,fontWeight: FontWeight.bold,fontSize: 13),))))
+                child: Center(child:  Text(text2,
+                  style:const TextStyle(
+                      color: firstBackColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14),))))
 
       ],
     );

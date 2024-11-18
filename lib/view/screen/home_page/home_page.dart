@@ -35,9 +35,6 @@ class _HomePageState extends State<HomePage> {
                 DrawerHeader(
                   decoration:const BoxDecoration(
                     color: sevenBackColor,
-                    borderRadius: BorderRadius.vertical(
-                      bottom: Radius.circular(20),
-                    ),
                   ),
                   child: SizedBox(
                     width: 250,
@@ -57,6 +54,7 @@ class _HomePageState extends State<HomePage> {
                   },
                   text: '12'.tr,
                   icon: const Icon(Icons.create_outlined),
+
                 ),
                 ListTitleHomePage(
                   onTap: () {},

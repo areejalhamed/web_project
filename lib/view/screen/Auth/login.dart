@@ -20,18 +20,18 @@ class Loginpage extends StatelessWidget {
           decoration:const  BoxDecoration(
               image: DecorationImage(
                   fit: BoxFit.fill,
-                  image: AssetImage('assets/images/register1.png') )),
+                  image: AssetImage('assets/images/background.png') )),
           child: Padding(
               padding: const EdgeInsets.only(top: 50, bottom: 50, right: 200, left: 200),
               child: Form(
                 key: controller.formstate,
                 child: GetBuilder<Logincontroll>(
                   builder: (controller) =>Container(
-                      color: sevenBackColor,
+                      color: secondBackColor,
                       child: Container(
                         padding: const EdgeInsets.only(top: 50, right: 150 , left: 150),
                         decoration: const BoxDecoration(
-                            color: white,
+                            color: sevenBackColor,
                             borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(200),
                                 topRight: Radius.circular(200),)),
@@ -90,7 +90,7 @@ class Loginpage extends StatelessWidget {
                               },
                             ),
                             const SizedBox(
-                              height: 30,
+                              height: 20,
                             ),
                             Rowauth(
                                 text1: "6".tr,
