@@ -21,9 +21,9 @@ class ShowConfirmationDialog extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
         ),
         backgroundColor: Colors.white,
-        title: const Text(
-          'Enter Group Name',
-          style: TextStyle(
+        title: Text(
+          '39'.tr,
+          style:const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: Color(0xff0CD6C0),
@@ -36,12 +36,12 @@ class ShowConfirmationDialog extends StatelessWidget {
             children: [
               Textformfieldauth(
                 mycontroller: addGroupController.name,
-                hinttext: 'Enter Group Name',
+                hinttext: '39'.tr,
                 valid: (v) => validateinput(v!, 6, 30),
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
-                  hintText: 'Enter Group Name',
+                  hintText: '39'.tr,
                   hintStyle: TextStyle(color: Colors.grey[600]),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -49,10 +49,6 @@ class ShowConfirmationDialog extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              const Text(
-                'Are you sure you want to proceed?',
-                style: TextStyle(color: Colors.black87),
-              ),
             ],
           ),
         ),
@@ -61,9 +57,9 @@ class ShowConfirmationDialog extends StatelessWidget {
             onPressed: () {
               Get.toNamed(AppRoute.homePage);
             },
-            child: const Text(
-              'Cancel',
-              style: TextStyle(
+            child: Text(
+              '40'.tr,
+              style:const TextStyle(
                 color: Colors.grey,
               ),
             ),
@@ -78,9 +74,9 @@ class ShowConfirmationDialog extends StatelessWidget {
             onPressed: () async {
                 await addGroupController.addGroup();
             },
-            child: const Text(
-              'Add',
-              style: TextStyle(
+            child: Text(
+              '41'.tr,
+              style:const TextStyle(
                 color: Colors.white,
               ),
             ),

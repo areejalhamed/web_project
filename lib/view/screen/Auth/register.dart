@@ -36,9 +36,9 @@ class Registerpage extends StatelessWidget {
                         )),
                     child: Column(
                       children: [
-                        const Text(
-                          'create a new account ',
-                          style: TextStyle(
+                         Text(
+                          '8'.tr,
+                          style:const TextStyle(
                             fontSize: 35,
                             fontWeight: FontWeight.bold,
                           ),
@@ -47,11 +47,11 @@ class Registerpage extends StatelessWidget {
                           height: 10,
                         ),
                         Rowauth(
-                            text1: " Already have an account ?",
+                            text1: "9".tr,
                             onTap: () {
                               controller.goToLogin();
                             },
-                            text2: 'Sign in'),
+                            text2: '5'.tr),
                         const SizedBox(
                           height: 60,
                         ),
@@ -60,7 +60,7 @@ class Registerpage extends StatelessWidget {
                             return validateinput(value!, 2, 30);
                           },
                           mycontroller: controller.name,
-                          hinttext: 'Enter your name',
+                          hinttext: '10'.tr,
                           iconDataprefix: Icons.person,
                         ),
                         const SizedBox(
@@ -71,7 +71,7 @@ class Registerpage extends StatelessWidget {
                             return validateinput(value!, 2, 30);
                           },
                           mycontroller: controller.email,
-                          hinttext: 'Enter email',
+                          hinttext: '1'.tr,
                           iconDataprefix: Icons.email,
                         ),
                         const SizedBox(
@@ -86,7 +86,7 @@ class Registerpage extends StatelessWidget {
                           onTapicon: () {
                             controller.showpassword();
                           },
-                          hinttext: 'Enter password',
+                          hinttext: '2'.tr,
                           iconDataprefix: Icons.lock,
                           iconDatasuffix: controller.isshowpassword
                               ? Icons.visibility
@@ -96,7 +96,7 @@ class Registerpage extends StatelessWidget {
                           height: 50,
                         ),
                         MaterialButtonAuth(
-                          text: 'Sign up ',
+                          text: '7'.tr,
                           onPressed: () {
                             controller.register();
                           },

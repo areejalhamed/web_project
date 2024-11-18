@@ -38,11 +38,11 @@ class GetAllGroupControllerImp extends GetAllGroupController {
         }
         // Get.snackbar("Success", "Groups fetched successfully");
       } else {
-        Get.snackbar("Error", "Failed to fetch groups");
+        Get.snackbar("28".tr, "37".tr);
       }
     } catch (e) {
       print("Error occurred: $e");
-      Get.snackbar("Error", "An error occurred while fetching the groups.");
+      Get.snackbar("28".tr, "An error occurred while fetching the groups.");
       statusRequest = StatusRequest.failure;
     } finally {
       update();

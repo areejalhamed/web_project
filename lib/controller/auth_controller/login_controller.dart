@@ -53,7 +53,7 @@ class Logincontroll extends Logincontroller {
           await box.write('token', token);
           print("token is $token");
           // عرض رسالة ترحيب
-          Get.snackbar("Welcome", "Your account has been logged in successfully");
+          Get.snackbar("26".tr, "27".tr);
           goToHomePage();
         } else {
           print('Login failed: ${response["status"]}');

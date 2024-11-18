@@ -127,6 +127,7 @@ class Crud {
       print("StatusCode: ${response.statusCode}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        print("StatusCode: ${response.statusCode}");
         return Right(responseBody);
       } else if (response.statusCode == 400 || response.statusCode == 422) {
         return const Left(StatusRequest.serverfailure);

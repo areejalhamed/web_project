@@ -44,12 +44,12 @@ class AddGroupControllerImp extends AddGroupController {
 
         if (statusRequest == StatusRequest.success) {
           print("Response data: $response");
-          Get.snackbar("Success", "Your Group has been added successfully");
+          Get.snackbar("30".tr, "35".tr);
           Get.toNamed(AppRoute.homePage);
         }
       } catch (e) {
         print("Error occurred: $e");
-        Get.snackbar("Error", "An error occurred while adding the group.");
+        Get.snackbar("28".tr, "36".tr);
         statusRequest = StatusRequest.failure;
       } finally {
         update();

@@ -50,12 +50,12 @@ class Registercontroll extends Registercontroller {
 
         // تحقق من نجاح التسجيل
         if (response["success"] == true) {
-          Get.snackbar("Welcome", response["message"]);
+          Get.snackbar("26".tr, response["message"]);
           goToHomePage();
         } else {
           // إذا كان هناك خطأ في التسجيل
           Get.defaultDialog(
-              title: "Warning",
+              title: "28".tr,
               middleText: response["message"] ?? "An error occurred"
           );
           statusRequest = StatusRequest.failure;
@@ -64,7 +64,7 @@ class Registercontroll extends Registercontroller {
         // إذا كانت الاستجابة ليست خريطة
         Get.defaultDialog(
             title: "Error",
-            middleText: "Invalid response format"
+            middleText: "29".tr
         );
         statusRequest = StatusRequest.failure;
       }

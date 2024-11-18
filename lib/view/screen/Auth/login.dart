@@ -37,9 +37,9 @@ class Loginpage extends StatelessWidget {
                                 topRight: Radius.circular(200),)),
                         child: Column(
                           children: [
-                            const Text(
-                              'Welcom Back !',
-                              style: TextStyle(
+                             Text(
+                              "3".tr,
+                              style:const TextStyle(
                                 fontSize: 35,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -47,9 +47,9 @@ class Loginpage extends StatelessWidget {
                             const SizedBox(
                               height: 10,
                             ),
-                            const Text(
-                              'Login to get start ',
-                              style: TextStyle(fontSize: 20),
+                             Text(
+                              '4'.tr,
+                              style:const TextStyle(fontSize: 20),
                             ),
                             const SizedBox(
                               height: 80,
@@ -59,7 +59,7 @@ class Loginpage extends StatelessWidget {
                               valid: (value) {
                                 return validateinput(value!, 2, 30);
                               },
-                              hinttext: 'Enter email',
+                              hinttext: '1'.tr,
                               iconDataprefix: Icons.email,
                             ),
                             const SizedBox(
@@ -74,7 +74,7 @@ class Loginpage extends StatelessWidget {
                               onTapicon: () {
                                 controller.showpassword();
                               },
-                              hinttext: 'Enter password',
+                              hinttext: '2'.tr,
                               iconDataprefix: Icons.lock,
                               iconDatasuffix: controller.isshowpassword
                                   ? Icons.visibility
@@ -84,7 +84,7 @@ class Loginpage extends StatelessWidget {
                               height: 50,
                             ),
                             MaterialButtonAuth(
-                              text: 'Sign in ',
+                              text: '5'.tr,
                               onPressed: () {
                                 controller.Login();
                               },
@@ -93,10 +93,10 @@ class Loginpage extends StatelessWidget {
                               height: 30,
                             ),
                             Rowauth(
-                                text1: " Don't have an account ?",
+                                text1: "6".tr,
                                 onTap: () {
                                   controller.gotoRegister();},
-                                text2: 'Sign up'),
+                                text2: '7'.tr),
                           ],
                         ),
                       )),

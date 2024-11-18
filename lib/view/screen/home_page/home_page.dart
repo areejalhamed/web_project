@@ -8,6 +8,7 @@ import '../../../controller/home_page_controller/get_group_controller.dart';
 import '../../../core/class/crud.dart';
 import '../../../core/class/staterequest.dart';
 import '../../../core/constant/color.dart';
+import '../../../core/local/local_controller.dart';
 import '../../../data/dataresource/home_page_data/get_group_data.dart';
 import '../../widget/home_page/list_title.dart';
 
@@ -19,20 +20,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(GetAllGroupControllerImp(GetAllGroupData(Crud())));
     return Scaffold(
       body: Row(
         children: <Widget>[
-          // Sidebar for navigation and options
           Container(
             width: 250,
             color: Colors.grey[200],
             child: Column(
               children: <Widget>[
-                const DrawerHeader(
-                  decoration: BoxDecoration(
+                DrawerHeader(
+                  decoration:const BoxDecoration(
                     color: sevenBackColor,
                     borderRadius: BorderRadius.vertical(
                       bottom: Radius.circular(20),
@@ -42,8 +43,8 @@ class _HomePageState extends State<HomePage> {
                     width: 250,
                     height: 75,
                     child: Text(
-                      'My _ Account',
-                      style: TextStyle(
+                      '11'.tr,
+                      style:const TextStyle(
                         color: Colors.white,
                         fontSize: 24,
                       ),
@@ -54,23 +55,32 @@ class _HomePageState extends State<HomePage> {
                   onTap: () {
                     Get.toNamed(AppRoute.showConfirmationDialog);
                   },
-                  text: 'Create a group',
+                  text: '12'.tr,
                   icon: const Icon(Icons.create_outlined),
                 ),
                 ListTitleHomePage(
                   onTap: () {},
-                  text: 'Setting',
+                  text: '13'.tr,
                   icon: const Icon(Icons.settings),
                 ),
                 ListTitleHomePage(
                   onTap: () {},
-                  text: 'About',
+                  text: '14'.tr,
                   icon: const Icon(Icons.info_outline_rounded),
+                ),
+                ListTitleHomePage(
+                  onTap: () {
+                    String currentLang = MyLocaleController.sharedPreferences?.getString("lang") ?? 'en';
+                    String newLang = currentLang == 'en' ? 'ar' : 'en';
+                    MyLocaleController.changeLanguage(newLang);
+                    print("Language changed to: $newLang");
+                  },
+                  text: '34'.tr,
+                  icon: const Icon(Icons.language),
                 ),
               ],
             ),
           ),
-          // Main content for displaying groups in a grid format
           Expanded(
             child: Column(
               children: [
@@ -78,7 +88,7 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.all(16.0),
                   child: TextField(
                     decoration: InputDecoration(
-                      labelText: 'Search ..',
+                      labelText: '15'.tr,
                       prefixIcon: const Icon(Icons.search, color: fiveBackColor),
                       labelStyle: const TextStyle(color: fiveBackColor),
                       enabledBorder: OutlineInputBorder(
@@ -98,9 +108,9 @@ class _HomePageState extends State<HomePage> {
                       if (controller.statusRequest == StatusRequest.loading) {
                         return const Center(child: CircularProgressIndicator());
                       } else if (controller.statusRequest == StatusRequest.failure) {
-                        return const Center(child: Text('Failed to load groups'));
+                        return Center(child: Text('16'.tr));
                       } else if (controller.groups.isEmpty) {
-                        return const Center(child: Text('No groups available'));
+                        return Center(child: Text('17'.tr));
                       } else {
                         return RefreshIndicator(
                           onRefresh: () async {
@@ -129,13 +139,13 @@ class _HomePageState extends State<HomePage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => ViewGroup(groupName: group['name'] ?? 'Unnamed Group'),
+                                      builder: (context) => ViewGroup(groupName: group['name'] ?? 'Unnamed Group', groupId: group['id'],),
                                     ),
                                   );
                                 },
                                 child: Center(
                                   child: Text(
-                                    group['name'] ?? 'Unnamed Group',
+                                    group['18'.tr] ?? '19'.tr,
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                       fontSize: 18,
