@@ -18,7 +18,7 @@ class Registerpage extends StatelessWidget {
           decoration: const BoxDecoration(
               image: DecorationImage(
                   fit: BoxFit.fill,
-                  image: AssetImage('assets/images/register1.png'))),
+                  image: AssetImage('assets/images/background.png'))),
           child: Padding(
             padding: const EdgeInsets.only(
                 top: 50, bottom: 50, right: 200, left: 200),
@@ -93,12 +93,12 @@ class Registerpage extends StatelessWidget {
                               : Icons.visibility_off,
                         ),
                         const SizedBox(
-                          height: 50,
+                          height: 30,
                         ),
                         MaterialButtonAuth(
                           text: '7'.tr,
                           onPressed: () {
-                            controller.register();
+                            controller.Register();
                           },
                         ),
                       ],

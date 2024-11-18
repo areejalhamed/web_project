@@ -5,6 +5,7 @@ import 'package:dartz/dartz.dart';
 
 class Crud {
 
+
   String? globalAuthorizationToken;
 
   Future<Either<StatusRequest, Map>> post(String url, Map data) async {
@@ -14,16 +15,19 @@ class Crud {
         body: data,
       );
 
-      // تحليل body الخاص بالاستجابة
+      //تحليل body الخاص بالاستجابة
+
       var responseBody = jsonDecode(response.body);
       print('Response Body: $responseBody');
       print("StatusCode: ${response.statusCode}");
 
+
       // استخراج رمز المصادقة من حقل data إذا كان موجوداً
-      if (responseBody.containsKey('data')) {
-        globalAuthorizationToken = responseBody['data'];
-        print('Token (data): $globalAuthorizationToken');
-      } else {
+      if (responseBody.containsKey("data")) {
+           globalAuthorizationToken = responseBody["data"]["token"] ;
+            print('Token : $globalAuthorizationToken');
+      }
+      else {
         print('Authorization token not found in response body.');
       }
 
