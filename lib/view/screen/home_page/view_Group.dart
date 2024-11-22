@@ -5,19 +5,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project/controller/home_page_controller/add_file_to_group_controller.dart';
-import 'package:project/data/dataresource/home_page_data/get_user_data.dart';
 import '../../../controller/home_page_controller/get_file_from_group_controller.dart';
-import '../../../controller/home_page_controller/get_user_controller.dart';
 import '../../../core/class/crud.dart';
 import '../../../core/class/staterequest.dart';
 import '../../../core/constant/color.dart';
 import '../../../data/dataresource/home_page_data/get_file_from_group_data.dart';
+import '../../widget/home_page/view_pdf.dart';
+import 'get_user_all.dart';
 
 class ViewGroup extends StatelessWidget {
   final String groupName;
   final int groupId;
   final AddFileToGroupControllerImp controller =
-  Get.put(AddFileToGroupControllerImp(Get.find()));
+      Get.put(AddFileToGroupControllerImp(Get.find()));
 
   ViewGroup({super.key, required this.groupName, required this.groupId});
 
@@ -27,66 +27,54 @@ class ViewGroup extends StatelessWidget {
         GetFileFromGroupControllerImp(GetFileFromGroupData(Crud()), groupId));
 
     final GetFileFromGroupControllerImp getFileFromGroupControllerImp =
-    Get.find<GetFileFromGroupControllerImp>();
-
-
-    final GetUserControllerImp getUserControllerImp = Get.put(GetUserControllerImp(GetUserGroupData(Crud())));
+        Get.find<GetFileFromGroupControllerImp>();
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: sevenBackColor,
-          title: Text(
-            groupName,
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          ),
-          // actions: [
-          //   Obx(() {
-          //     if (getUserControllerImp.statusRequest == StatusRequest.loading) {
-          //       return const Center(child: CircularProgressIndicator());
-          //     } else if (getUserControllerImp.statusRequest == StatusRequest.failure) {
-          //       return TextButton(
-          //         onPressed: () {},
-          //         child: Text("Error loading users"),
-          //       );
-          //     } else if (getUserControllerImp.users.isNotEmpty) {
-          //       // عرض المستخدمين في DropdownButton
-          //       return DropdownButton<String>(
-          //         onChanged: (String? selectedUser) {
-          //           // يمكن استخدام هذا لتغيير أو التعامل مع المستخدم المختار
-          //           print("Selected User: $selectedUser");
-          //         },
-          //         items: getUserControllerImp.users.map((user) {
-          //           return DropdownMenuItem<String>(
-          //             value: user['name'],
-          //             child: Text(user['name']),
-          //           );
-          //         }).toList(),
-          //       );
-          //     } else {
-          //       return TextButton(
-          //         onPressed: () {},
-          //         child: Text("No users available"),
-          //       );
-          //     }
-          //   }),
-          // ],
+      appBar: AppBar(
+        backgroundColor: sevenBackColor,
+        title: Text(
+          groupName,
+          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
-
-        body: Column(
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.settings),
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
+                  child: TextButton(
+                    onPressed: () {
+                      Get.to(GetAllUser(groupId: groupId));
+                    },
+                    child: const Text("All User"),
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 'Add User',
+                  child: TextButton(
+                    onPressed: () {
+                    },
+                    child: const Text("Add User"),
+                  ),
+                ),
+              ];
+            },
+          ),
+        ],
+      ),
+      body: Column(
         children: [
           Expanded(
             child: RefreshIndicator(
               onRefresh: () async {
                 await getFileFromGroupControllerImp.getFile(groupId);
               },
-              child: Obx(() {
-                if (getFileFromGroupControllerImp.statusRequest.value ==
-                    StatusRequest.loading) {
+              child:  Obx(() {
+                if (getFileFromGroupControllerImp.statusRequest.value == StatusRequest.loading) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
-                } else if (getFileFromGroupControllerImp.statusRequest.value ==
-                    StatusRequest.failure) {
+                } else if (getFileFromGroupControllerImp.statusRequest.value == StatusRequest.failure) {
                   return Center(
                     child: Text('42'.tr),
                   );
@@ -104,7 +92,10 @@ class ViewGroup extends StatelessWidget {
                       return ListTile(
                         title: Text(file['name'] ?? 'Unnamed File'),
                         subtitle: Text(file['path'] ?? 'No Path'),
-                        leading: const Icon(Icons.file_copy),
+                        leading: const Icon(Icons.picture_as_pdf, color: Colors.red),
+                        onTap: () {
+                          Get.to(() => PdfViewerScreen(pdfPath: file['path']));
+                        },
                       );
                     },
                   );
@@ -123,7 +114,7 @@ class ViewGroup extends StatelessWidget {
                     decoration: InputDecoration(
                       labelText: "44".tr,
                       hintText: "44".tr,
-                      border:const OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                     ),
                   ),
                 ),

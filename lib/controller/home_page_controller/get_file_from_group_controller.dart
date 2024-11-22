@@ -5,31 +5,27 @@ import '../../core/function/handlingdata.dart';
 import '../../data/dataresource/home_page_data/get_file_from_group_data.dart';
 
 abstract class GetFileFromGroupController extends GetxController {
-  Future<void> getFile(int groupId);
+   getFile(int groupId);
 }
 
 class GetFileFromGroupControllerImp extends GetFileFromGroupController {
   final GetFileFromGroupData getGroupData;
 
-  // معرف المجموعة القابل للتحديث
   var groupId = 0.obs;
 
   var statusRequest = StatusRequest.loading.obs;
   var files = <Map<String, dynamic>>[].obs;
 
   GetFileFromGroupControllerImp(this.getGroupData, int initialGroupId) {
-    groupId(initialGroupId); // تعيين المجموعة الأولى عند الإنشاء
+    groupId(initialGroupId);
   }
 
   @override
   void onInit() {
     super.onInit();
-    // تحميل الملفات عند تغيير معرف المجموعة
     ever(groupId, (int groupId) {
       getFile(groupId);
     });
-
-    // بدء التحميل للمجموعة الأولى
     getFile(groupId.value);
   }
 
@@ -37,7 +33,7 @@ class GetFileFromGroupControllerImp extends GetFileFromGroupController {
   Future<void> getFile(int groupId) async {
     statusRequest(StatusRequest.loading);
     files.clear(); // مسح الملفات القديمة عند بدء تحميل جديد
-
+    update();
     try {
       print("Fetching files for group ID: $groupId");
       var response = await getGroupData.get(groupId);
@@ -76,10 +72,9 @@ class GetFileFromGroupControllerImp extends GetFileFromGroupController {
     }
   }
 
-  // دالة لتحديث معرف المجموعة عند التبديل
   void changeGroupId(int newGroupId) {
     if (newGroupId != groupId.value) {
-      groupId(newGroupId); // تحديث معرف المجموعة
+      groupId(newGroupId);
     }
   }
 }

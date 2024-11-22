@@ -5,44 +5,59 @@ import '../../core/function/handlingdata.dart';
 import '../../data/dataresource/home_page_data/get_user_data.dart';
 
 abstract class GetUserController extends GetxController {
-  getUser(String groupId); // تعديل هنا لإضافة المعلمة
+  getUser(int groupId); // تعديل هنا لإضافة المعلمة
 }
 
 class GetUserControllerImp extends GetUserController {
   final GetUserGroupData getGroupData;
-  StatusRequest? statusRequest;
-  List<Map<String, dynamic>> users = []; // تغيير هنا أيضًا إلى List<Map<String, dynamic>>
 
-  GetUserControllerImp(this.getGroupData);
+  var groupId = 0.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
+  var statusRequest = StatusRequest.loading.obs;
+  var users = <Map<String, dynamic>>[].obs;
+
+  GetUserControllerImp(this.getGroupData ,  int initialGroupId){
+    groupId(initialGroupId); // تعيين المجموعة الأولى عند الإنشاء
+
   }
 
   @override
-  Future<void> getUser(String groupId) async { // تعديل هنا لإضافة المعلمة
-    statusRequest = StatusRequest.loading;
+  void onInit() {
+    ever(groupId, (int groupId) {
+      getUser(groupId);
+    });
+    getUser(groupId.value);
+  }
+
+  @override
+  Future<void> getUser(int groupId) async {
+    statusRequest(StatusRequest.loading);
     update();
 
     try {
-      var response = await getGroupData.get(groupId); // تمرير groupId
+      print("Fetching users for group ID: $groupId");
+      var response = await getGroupData.get(groupId);
+      print("Response: $response");
 
-      statusRequest = handlingData(response);
+      if (response == null) { // إصلاح: تحقق من أن response غير فارغة
+        Get.snackbar("Error", "Failed to load users. Null response.");
+        statusRequest(StatusRequest.failure);
+        update(); // تحديث الواجهة.
+        return;
+      }
 
-      if (statusRequest == StatusRequest.success) {
-        if (response.isRight()) {
-          users = response.getOrElse(() => []);
-          print("User data in controller: $users");
-        }
+      statusRequest(handlingData(response));
+      if (statusRequest.value == StatusRequest.success && response.isRight()) {
+        users.assignAll(response.getOrElse(() => []));
+        print("User data in controller: $users");
         Get.snackbar("Success", "User fetched successfully");
       } else {
-        Get.snackbar("28".tr, "37".tr);
+        Get.snackbar("Error", "Failed to load users.");
       }
     } catch (e) {
       print("Error occurred: $e");
-      Get.snackbar("28".tr, "An error occurred while fetching the users.");
-      statusRequest = StatusRequest.failure;
+      Get.snackbar("Error", "An error occurred while fetching the users.");
+      statusRequest(StatusRequest.failure);
     } finally {
       update();
     }

@@ -48,6 +48,9 @@ class Registercontroll extends Registercontroller {
       // تحقق مما إذا كانت الاستجابة تحتوي على بيانات
       if (statusRequest == StatusRequest.success ) {
         if (response["success"] == true) {
+          String token = response["data"]["token"];
+          await box.write('token', token);
+          print("token is $token");
           Get.snackbar("26".tr, response["message"]);
           goToHomePage();
         } else {

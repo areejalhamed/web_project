@@ -10,7 +10,7 @@ class GetUserGroupData {
 
   GetUserGroupData(this.client);
 
-  Future<Either<StatusRequest, List<Map<String, dynamic>>>> get(String groupId) async {
+  Future<Either<StatusRequest, List<Map<String, dynamic>>>> get(int groupId) async {
     String? token = box.read('token');
     print('Loaded token: $token');
 
