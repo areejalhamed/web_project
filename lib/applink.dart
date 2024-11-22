@@ -4,4 +4,5 @@ class Applink{
   static const String register ="$url/register";
   static const String addGroup ="$url/addGroup";
   static const String getAllGroup ="$url/getAllGroups";
+  static const String getAllUsers ="$url/AllUsers";
 }

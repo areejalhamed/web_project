@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:project/applink.dart';
 import 'package:project/core/constant/routes.dart';
 import 'package:project/view/screen/home_page/view_Group.dart';
+import 'package:project/view/widget/home_page/Search.dart';
 import '../../../controller/home_page_controller/get_group_controller.dart';
 import '../../../core/class/crud.dart';
 import '../../../core/class/staterequest.dart';
@@ -11,6 +11,7 @@ import '../../../core/constant/color.dart';
 import '../../../core/local/local_controller.dart';
 import '../../../data/dataresource/home_page_data/get_group_data.dart';
 import '../../widget/home_page/list_title.dart';
+import 'drawer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,78 +28,14 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Row(
         children: <Widget>[
-          Container(
-            width: 250,
-            color: Colors.grey[200],
-            child: Column(
-              children: <Widget>[
-                DrawerHeader(
-                  decoration:const BoxDecoration(
-                    color: sevenBackColor,
-                  ),
-                  child: SizedBox(
-                    width: 250,
-                    height: 75,
-                    child: Text(
-                      '11'.tr,
-                      style:const TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                      ),
-                    ),
-                  ),
-                ),
-                ListTitleHomePage(
-                  onTap: () {
-                    Get.toNamed(AppRoute.showConfirmationDialog);
-                  },
-                  text: '12'.tr,
-                  icon: const Icon(Icons.create_outlined),
-
-                ),
-                ListTitleHomePage(
-                  onTap: () {},
-                  text: '13'.tr,
-                  icon: const Icon(Icons.settings),
-                ),
-                ListTitleHomePage(
-                  onTap: () {},
-                  text: '14'.tr,
-                  icon: const Icon(Icons.info_outline_rounded),
-                ),
-                ListTitleHomePage(
-                  onTap: () {
-                    String currentLang = MyLocaleController.sharedPreferences?.getString("lang") ?? 'en';
-                    String newLang = currentLang == 'en' ? 'ar' : 'en';
-                    MyLocaleController.changeLanguage(newLang);
-                    print("Language changed to: $newLang");
-                  },
-                  text: '34'.tr,
-                  icon: const Icon(Icons.language),
-                ),
-              ],
-            ),
-          ),
+          //drawer
+          Drawerpage(),
           Expanded(
             child: Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      labelText: '15'.tr,
-                      prefixIcon: const Icon(Icons.search, color: fiveBackColor),
-                      labelStyle: const TextStyle(color: fiveBackColor),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                        borderSide: const BorderSide(color: fiveBackColor),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                        borderSide: const BorderSide(color: sevenBackColor),
-                      ),
-                    ),
-                  ),
+                  child: Searchpage(),
                 ),
                 Expanded(
                   child: GetBuilder<GetAllGroupControllerImp>(
