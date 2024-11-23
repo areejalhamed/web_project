@@ -61,6 +61,7 @@ class MyLocal implements Translations {
       "44" : "ادخل اسم الملف.",
       "45" : "تحميل الملف",
       "46" : "عرض الأعضاء",
+      "47" : "اسم الصفحة",
 
 
     },
@@ -123,6 +124,7 @@ class MyLocal implements Translations {
       "44" : "Enter file name.",
       "45" : "Upload File",
       "46" : "View User",
+      "47" : "Home Page",
 
 
     }

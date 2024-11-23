@@ -14,8 +14,9 @@ class GetAllUser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final GetUserControllerImp getUserControllerImp =
-    Get.put(GetUserControllerImp(GetUserGroupData(Crud()), groupId));
+    Get.put(GetUserControllerImp(GetUserGroupData(Crud()),groupId));
 
     return Scaffold(
       appBar: AppBar(

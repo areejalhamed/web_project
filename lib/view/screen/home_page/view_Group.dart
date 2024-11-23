@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:html' as html;
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +54,7 @@ class ViewGroup extends StatelessWidget {
                   value: 'Add User',
                   child: TextButton(
                     onPressed: () {
+
                     },
                     child: const Text("Add User"),
                   ),
@@ -69,18 +71,18 @@ class ViewGroup extends StatelessWidget {
               onRefresh: () async {
                 await getFileFromGroupControllerImp.getFile(groupId);
               },
-              child:  Obx(() {
+              child: Obx(() {
                 if (getFileFromGroupControllerImp.statusRequest.value == StatusRequest.loading) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
                 } else if (getFileFromGroupControllerImp.statusRequest.value == StatusRequest.failure) {
                   return Center(
-                    child: Text('42'.tr),
+                    child: Text('حدث خطأ أثناء تحميل الملفات.'.tr),
                   );
                 } else if (getFileFromGroupControllerImp.files.isEmpty) {
                   return Center(
-                    child: Text('43'.tr),
+                    child: Text('لا توجد ملفات متاحة.'.tr),
                   );
                 } else {
                   return ListView.builder(
@@ -89,12 +91,16 @@ class ViewGroup extends StatelessWidget {
                     itemCount: getFileFromGroupControllerImp.files.length,
                     itemBuilder: (context, index) {
                       final file = getFileFromGroupControllerImp.files[index];
+                      final fileName = file['name'] ?? ''; // اسم الملف
+                      final filePath = "http://127.0.0.1:8000/storage/uploads/$fileName"; // المسار الكامل
+
                       return ListTile(
-                        title: Text(file['name'] ?? 'Unnamed File'),
-                        subtitle: Text(file['path'] ?? 'No Path'),
+                        title: Text(fileName),
+                        subtitle: Text(filePath),
                         leading: const Icon(Icons.picture_as_pdf, color: Colors.red),
                         onTap: () {
-                          Get.to(() => PdfViewerScreen(pdfPath: file['path']));
+                          print("File path tapped: $filePath");
+                          Get.to(() => PdfViewerScreen(pdfPath: filePath));
                         },
                       );
                     },

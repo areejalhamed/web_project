@@ -10,8 +10,8 @@ abstract class GetAllGroupController extends GetxController {
 class GetAllGroupControllerImp extends GetAllGroupController {
 
   final GetAllGroupData getGroupData;
-  StatusRequest? statusRequest;
-  List<dynamic> groups = [];
+  var statusRequest = StatusRequest.loading.obs; // حوله إلى Rx
+  List<dynamic> groups = [].obs; // RxList
 
   GetAllGroupControllerImp(this.getGroupData);
 
@@ -23,14 +23,14 @@ class GetAllGroupControllerImp extends GetAllGroupController {
 
   @override
   Future<void> getGroup() async {
-    statusRequest = StatusRequest.loading;
+
+    statusRequest.value = StatusRequest.loading; // أثناء التحميل
     update();
 
     try {
       var response = await getGroupData.get();
 
-      statusRequest = handlingData(response);
-
+      statusRequest.value = handlingData(response);
       if (statusRequest == StatusRequest.success) {
         if (response.isRight()) {
           groups = response.getOrElse(() => []);
@@ -43,7 +43,7 @@ class GetAllGroupControllerImp extends GetAllGroupController {
     } catch (e) {
       print("Error occurred: $e");
       Get.snackbar("28".tr, "An error occurred while fetching the groups.");
-      statusRequest = StatusRequest.failure;
+      statusRequest.value = StatusRequest.failure;
     } finally {
       update();
     }
