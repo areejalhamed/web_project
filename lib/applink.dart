@@ -5,4 +5,6 @@ class Applink{
   static const String addGroup ="$url/addGroup";
   static const String getAllGroup ="$url/getAllGroups";
   static const String searchGroup ="$url/searchGroupByName";
+  static const String getAllUsers ="$url/AllUsers";
+  static const String getGroupsForUser ="$url/getGroupsForUser";
 }

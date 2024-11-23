@@ -38,6 +38,13 @@ class ViewGroup extends StatelessWidget {
           style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh, color: Colors.white),
+            onPressed: () {
+              getFileFromGroupControllerImp.getFile(groupId);
+            },
+          ),
+          const SizedBox(width: 8.0),
           PopupMenuButton<String>(
             icon: const Icon(Icons.settings),
             itemBuilder: (context) {

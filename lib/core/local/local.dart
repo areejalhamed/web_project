@@ -62,6 +62,9 @@ class MyLocal implements Translations {
       "45" : "تحميل الملف",
       "46" : "عرض الأعضاء",
       "47" : "اسم الصفحة",
+      "48" : "الانكليزية",
+      "49" : "العربية",
+      "50" : "غروباتي",
 
 
     },
@@ -125,6 +128,9 @@ class MyLocal implements Translations {
       "45" : "Upload File",
       "46" : "View User",
       "47" : "Home Page",
+      "48" : "English",
+      "49" : "Arabic",
+      "50" : "My Groups",
 
 
     }
