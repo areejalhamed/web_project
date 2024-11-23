@@ -65,6 +65,9 @@ class MyLocal implements Translations {
       "48" : "الانكليزية",
       "49" : "العربية",
       "50" : "غروباتي",
+      "51" : "الوضع الفاتح",
+      "52" : "الوضع المظلم",
+      "53" : "جلب كل المستخدمين",
 
 
     },
@@ -131,6 +134,9 @@ class MyLocal implements Translations {
       "48" : "English",
       "49" : "Arabic",
       "50" : "My Groups",
+      "51" : "Light Mode",
+      "52" : "Dark Mode",
+      "53" : "GetAllUser",
 
 
     }

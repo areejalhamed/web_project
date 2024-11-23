@@ -23,10 +23,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-
   // final SearchGroupControllerImp searchController = Get.put(SearchGroupControllerImp(SearchGroupData(Crud())));
-  final GetAllGroupControllerImp groupController = Get.put(GetAllGroupControllerImp(GetAllGroupData(Crud())));
+  final GetAllGroupControllerImp groupController =
+      Get.put(GetAllGroupControllerImp(GetAllGroupData(Crud())));
 
   @override
   Widget build(BuildContext context) {
@@ -40,16 +39,16 @@ class _HomePageState extends State<HomePage> {
                 // Header ..
                 Container(
                   padding: const EdgeInsets.all(16.0),
-                  color: sevenBackColor,
+                  color: Theme.of(context).colorScheme.primary,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         "47".tr,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.background,
                         ),
                       ),
                       Row(
@@ -58,11 +57,18 @@ class _HomePageState extends State<HomePage> {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(19),
-                                color: secondBackColor,
+                                color: Theme.of(context).colorScheme.tertiary,
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: const Text("GetAllUser" , style: TextStyle(color: white),),
+                                child: Text(
+                                  "53".tr,
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background,
+                                  ),
+                                ),
                               ),
                             ),
                             onPressed: () {
@@ -70,14 +76,20 @@ class _HomePageState extends State<HomePage> {
                             },
                           ),
                           IconButton(
-                            icon: const Icon(Icons.refresh, color: Colors.white),
+                            icon: Icon(
+                              Icons.refresh,
+                              color: Theme.of(context).colorScheme.background,
+                            ),
                             onPressed: () {
                               groupController.getGroup();
                             },
                           ),
                           const SizedBox(width: 8.0),
                           PopupMenuButton<String>(
-                            icon: const Icon(Icons.language, color: Colors.white),
+                            icon: Icon(
+                              Icons.language,
+                              color: Theme.of(context).colorScheme.background,
+                            ),
                             onSelected: (String value) {
                               if (value == 'ar') {
                                 Get.updateLocale(const Locale('ar'));
@@ -86,11 +98,11 @@ class _HomePageState extends State<HomePage> {
                               }
                             },
                             itemBuilder: (BuildContext context) => [
-                               PopupMenuItem(
+                              PopupMenuItem(
                                 value: 'ar',
                                 child: Text('49'.tr),
                               ),
-                               PopupMenuItem(
+                              PopupMenuItem(
                                 value: 'en',
                                 child: Text('48'.tr),
                               ),
@@ -104,26 +116,36 @@ class _HomePageState extends State<HomePage> {
                 // search ..
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child :  Searchpage(),
+                  child: Searchpage(),
                 ),
                 // body ..
                 Expanded(
                   child: Obx(() {
-                    if (groupController.statusRequest.value == StatusRequest.loading) {
+                    if (groupController.statusRequest.value ==
+                        StatusRequest.loading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (groupController.groups.isEmpty) {
-                      return const Center(child: Text('لا توجد نتائج متطابقة.'));
+                      return const Center(
+                          child: Text(''));
                     } else {
-                      return ListView.builder(
+                      return GridView.builder(
+                        padding: const EdgeInsets.all(16.0),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4, // عدد الأعمدة
+                          crossAxisSpacing: 16.0, // المسافة الأفقية بين الأعمدة
+                          mainAxisSpacing: 16.0, // المسافة العمودية بين الصفوف
+                          childAspectRatio: 3 / 2, // نسبة العرض إلى الارتفاع لكل عنصر
+                        ),
                         itemCount: groupController.groups.length,
                         itemBuilder: (context, index) {
                           final group = groupController.groups[index];
-
+                          if (group == null) {
+                            return const SizedBox();
+                          }
                           return Container(
-                            margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                             padding: const EdgeInsets.all(12.0),
                             decoration: BoxDecoration(
-                              color: green,
+                              color: Theme.of(context).colorScheme.tertiaryFixed,
                               borderRadius: BorderRadius.circular(10),
                               boxShadow: [
                                 BoxShadow(
@@ -134,56 +156,79 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                             ),
-                            child: Row(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 // صورة المجموعة
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(8.0),
-                                  child: group['imageUrl'] != null
+                                  child: (group['image'] != null &&
+                                      Uri.tryParse(group['image'])?.isAbsolute == true)
                                       ? Image.network(
-                                    group['imageUrl'], // يجب أن يحتوي الكائن على 'imageUrl'
-                                    height: 50,
-                                    width: 50,
+                                    group['image'],
+                                    height: 100,
+                                    width: double.infinity,
                                     fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Icon(
+                                        Icons.group,
+                                        size: 50,
+                                        color: Theme.of(context).colorScheme.background,
+                                      );
+                                    },
                                   )
                                       : Icon(
                                     Icons.group,
                                     size: 50,
-                                    color: grey,
+                                    color: Theme.of(context).colorScheme.background,
                                   ),
                                 ),
-                                const SizedBox(width: 16.0),
+                                const SizedBox(height: 8.0),
                                 // اسم المجموعة
                                 Expanded(
-                                  child: Text(
-                                    group['name'] ?? 'بدون اسم',
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
+                                  child: InkWell(
+                                    onTap: () {
+                                      final groupName = group['name'] ?? 'بدون اسم';
+                                      final groupId = group['id'];
+
+                                      if (groupId == null) {
+                                        // معالجة الخطأ عند عدم وجود معرف المجموعة
+                                        Get.snackbar(
+                                          '28'.tr,
+                                          '',
+                                          backgroundColor: Colors.red,
+                                          colorText: Colors.white,
+                                        );
+                                        return;
+                                      }
+
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ViewGroup(
+                                            groupName: groupName,
+                                            groupId: groupId,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      group['name'] ?? 'بدون اسم',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(context).colorScheme.background,
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis, // قص النص إذا كان طويلاً
                                     ),
                                   ),
-                                ),
-                                // زر الانتقال إلى تفاصيل المجموعة
-                                IconButton(
-                                  icon: const Icon(Icons.arrow_forward_ios, color: Colors.black),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ViewGroup(
-                                          groupName: group['name'] ?? 'بدون اسم',
-                                          groupId: group['id'],
-                                        ),
-                                      ),
-                                    );
-                                  },
                                 ),
                               ],
                             ),
                           );
                         },
                       );
-
                     }
                   }),
                 ),

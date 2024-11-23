@@ -38,6 +38,7 @@ dependencies:
   get_storage:
   file_picker:
   path_provider:
+  provider: ^6.0.0
   syncfusion_flutter_pdfviewer:
   http: ^0.13.5
   dartz: ^0.10.1

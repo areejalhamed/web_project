@@ -4,7 +4,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:project/data/dataresource/home_page_data/add_groug_data.dart';
 import 'package:project/route.dart';
 import 'package:project/view/screen/Auth/login.dart';
-import 'package:project/view/screen/home_page/get_user_all_in_system.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'bindings/intialbindings.dart';
 import 'controller/home_page_controller/add_group_controller.dart';
@@ -12,6 +12,7 @@ import 'core/class/crud.dart';
 import 'core/local/local.dart';
 import 'core/local/local_controller.dart';
 import 'core/services/services.dart';
+import 'core/theme/theme_peovider.dart';
 import 'data/dataresource/home_page_data/add_file_to_group_data.dart';
 import 'data/dataresource/home_page_data/get_group_data.dart';
 
@@ -26,7 +27,12 @@ Future<void> main() async {
   Get.put(sharedPreferences);
   await initialServices();
   await GetStorage.init();
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ThemeProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -41,6 +47,9 @@ class MyApp extends StatelessWidget {
       home: Loginpage(),
       initialBinding: initalBindings(),
       getPages: routes ,
+      theme: Provider.of<ThemeProvider>(context).currentTheme,
     );
   }
 }
+
+//  color: Theme.of(context).colorScheme.primaryContainer,

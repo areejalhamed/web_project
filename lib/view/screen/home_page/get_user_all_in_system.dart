@@ -21,7 +21,7 @@ class GetAllUserInSystem extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: sevenBackColor,
-        title: const Text("Users List"),
+        title: const Text("Users"),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh, color: Colors.white),
