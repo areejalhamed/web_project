@@ -6,13 +6,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project/controller/home_page_controller/add_file_to_group_controller.dart';
+import '../../../controller/home_page_controller/add_user_to_group_controller.dart';
+import '../../../controller/home_page_controller/delete_group_controller.dart';
 import '../../../controller/home_page_controller/get_file_from_group_controller.dart';
 import '../../../core/class/crud.dart';
 import '../../../core/class/staterequest.dart';
 import '../../../core/constant/color.dart';
+import '../../../data/dataresource/home_page_data/add_user_to_gruop_data.dart';
+import '../../../data/dataresource/home_page_data/delete_group_data.dart';
 import '../../../data/dataresource/home_page_data/get_file_from_group_data.dart';
 import '../../widget/home_page/view_pdf.dart';
 import 'get_user_all.dart';
+import 'get_user_all_in_system.dart';
 
 class ViewGroup extends StatelessWidget {
   final String groupName;
@@ -24,11 +29,11 @@ class ViewGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.lazyPut(() =>
-        GetFileFromGroupControllerImp(GetFileFromGroupData(Crud()), groupId));
 
-    final GetFileFromGroupControllerImp getFileFromGroupControllerImp =
-        Get.find<GetFileFromGroupControllerImp>();
+    Get.lazyPut(() => GetFileFromGroupControllerImp(GetFileFromGroupData(Crud()), groupId));
+
+    final GetFileFromGroupControllerImp getFileFromGroupControllerImp = Get.find<GetFileFromGroupControllerImp>();
+    final DeleteGroupControllerImp deleteGroupControllerImp = Get.find<DeleteGroupControllerImp>();
 
     return Scaffold(
       appBar: AppBar(
@@ -61,9 +66,19 @@ class ViewGroup extends StatelessWidget {
                   value: 'Add User',
                   child: TextButton(
                     onPressed: () {
-
+                      Get.to(GetAllUserInSystem(groupId: groupId));  // تمرير groupId
                     },
                     child: const Text("Add User"),
+                  ),
+                ),
+
+                PopupMenuItem(
+                  value: 'Delete Group',
+                  child: TextButton(
+                    onPressed: () {
+                      deleteGroupControllerImp.deleteGroup(groupId); // حذف المجموعة مباشرة
+                    },
+                    child: const Text("Delete Group"),
                   ),
                 ),
               ];

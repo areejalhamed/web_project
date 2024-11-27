@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:project/core/class/staterequest.dart';
 import 'package:dartz/dartz.dart';
+import 'package:project/data/dataresource/home_page_data/delete_group_data.dart';
 
 class Crud {
 
@@ -83,35 +84,27 @@ class Crud {
 
   Future<Either<StatusRequest, Map>> postMultipart(String url, {Map<String, String>? headers, Map<String, String>? fields,}) async {
     try {
-      // إنشاء طلب Multipart
       var request = http.MultipartRequest('POST', Uri.parse(url));
 
-      // إضافة الحقول إن وجدت
       if (fields != null) {
         request.fields.addAll(fields);
       }
 
-      // إضافة الرؤوس إن وجدت
       if (headers != null) {
         request.headers.addAll(headers);
       }
 
-      // إرسال الطلب والحصول على الاستجابة
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
 
-      // تحليل الاستجابة
       var responseBody = jsonDecode(response.body);
       print('Response Body: $responseBody');
       print("StatusCode: ${response.statusCode}");
 
-      // التحقق من نجاح الطلب
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Right(responseBody);
-      } else if (response.statusCode == 400 || response.statusCode == 422) {
-        return const Left(StatusRequest.serverfailure);
       } else {
-        return const Left(StatusRequest.offlinefailure);
+        return const Left(StatusRequest.serverfailure);
       }
     } catch (e) {
       print('Exception in post request: $e');
@@ -144,4 +137,31 @@ class Crud {
     }
   }
 
+  Future<Either<StatusRequest, dynamic>> delete(String url, {required Map<String, String> headers}) async {
+    try {
+      var response = await http.delete(Uri.parse(url), headers: headers);
+
+      print("Response Status Code: ${response.statusCode}");
+      print("Response Body: ${response.body}");
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (response.body.isNotEmpty) {
+          try {
+            var responseBody = jsonDecode(response.body);
+            return Right(responseBody);
+          } catch (e) {
+            print("Response is not valid JSON: ${response.body}");
+            return Left(StatusRequest.serverfailure);
+          }
+        } else {
+          return Right({}); // إذا كانت الاستجابة فارغة
+        }
+      } else {
+        return Left(StatusRequest.serverfailure);
+      }
+    } catch (e) {
+      print('Exception in delete request: $e');
+      return Left(StatusRequest.offlinefailure);
+    }
+  }
 }

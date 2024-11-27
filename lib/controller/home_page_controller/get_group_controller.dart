@@ -5,13 +5,14 @@ import '../../core/function/handlingdata.dart';
 
 abstract class GetAllGroupController extends GetxController {
   getGroup();
+  searchGroup(String groupName); // تعريف تابع البحث
 }
 
 class GetAllGroupControllerImp extends GetAllGroupController {
-
   final GetAllGroupData getGroupData;
   var statusRequest = StatusRequest.loading.obs; // حوله إلى Rx
-  List<dynamic> groups = [].obs; // RxList
+  RxList<dynamic> groups = <dynamic>[].obs; // RxList بدلاً من List
+  RxList<dynamic> searchResults = <dynamic>[].obs; // نتائج البحث
 
   GetAllGroupControllerImp(this.getGroupData);
 
@@ -23,29 +24,40 @@ class GetAllGroupControllerImp extends GetAllGroupController {
 
   @override
   Future<void> getGroup() async {
-
     statusRequest.value = StatusRequest.loading; // أثناء التحميل
-    update();
+    // No need to call update() manually as GetX reacts to Rx changes
 
     try {
       var response = await getGroupData.get();
 
       statusRequest.value = handlingData(response);
-      if (statusRequest == StatusRequest.success) {
+      if (statusRequest.value == StatusRequest.success) {
         if (response.isRight()) {
-          groups = response.getOrElse(() => []);
+          groups.value = response.getOrElse(() => []); // Update groups value
           print("Groups data in controller: $groups");
         }
-        // Get.snackbar("Success", "Groups fetched successfully");
       } else {
-        Get.snackbar("28".tr, "37".tr);
+        Get.snackbar("Error", "Failed to fetch groups.");
       }
     } catch (e) {
       print("Error occurred: $e");
-      Get.snackbar("28".tr, "An error occurred while fetching the groups.");
+      Get.snackbar("Error", "An error occurred while fetching the groups.");
       statusRequest.value = StatusRequest.failure;
-    } finally {
-      update();
     }
+  }
+
+  @override
+  Future<void> searchGroup(String groupName) async {
+    if (groupName.isEmpty) {
+      searchResults.clear(); // مسح النتائج عند حذف النص
+      return;
+    }
+
+    // فلترة النتائج محليًا بناءً على الاسم
+    searchResults.value = groups
+        .where((group) =>
+    group['name'] != null &&
+        group['name'].toString().toLowerCase().contains(groupName.toLowerCase()))
+        .toList();
   }
 }

@@ -9,11 +9,9 @@ abstract class GetGroupForUserController extends GetxController {
 class GetGroupForUserControllerImp extends GetGroupForUserController {
   final GetGroupForUserData getGroupForUserData;
 
-  // الحالة العامة للطلب
   var statusRequest = StatusRequest.loading.obs;
-  var userId = 0.obs; // معرف المستخدم الديناميكي
+  var userId = 0.obs;
 
-  // قائمة الغروبات
   var groupList = <Map<String, dynamic>>[].obs; // RxList محددة النوع
 
   GetGroupForUserControllerImp(this.getGroupForUserData);
@@ -21,10 +19,7 @@ class GetGroupForUserControllerImp extends GetGroupForUserController {
   @override
   void onInit() {
     super.onInit();
-    // يمكن تشغيل وظائف مبدئية إذا لزم الأمر
   }
-
-  @override
   Future<void> getMyGroups(int userId) async {
     if (userId <= 0) {
       statusRequest.value = StatusRequest.failure;
@@ -41,7 +36,6 @@ class GetGroupForUserControllerImp extends GetGroupForUserController {
         statusRequest.value = failure;
         Get.snackbar("Error", "Failed to fetch groups. Please try again.");
       }, (data) {
-        // عرض البيانات المصنفة فقط
         groupList.value = data;
         statusRequest.value = StatusRequest.success;
         print("Filtered Groups: $groupList");
@@ -51,4 +45,7 @@ class GetGroupForUserControllerImp extends GetGroupForUserController {
       Get.snackbar("Error", "An unexpected error occurred: $e");
     }
   }
+
 }
+
+

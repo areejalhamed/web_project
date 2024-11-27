@@ -1,26 +1,36 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import '../../../core/constant/color.dart';
 
-class Searchpage extends StatelessWidget{
+class SearchPage extends StatelessWidget {
+
+  final Function(String) onSearchChanged; // ميثود يتم تمريرها من الواجهة
+  final TextEditingController controller;
+
+  const SearchPage({
+    Key? key,
+    required this.onSearchChanged,
+    required this.controller,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-   return TextField(
-     decoration: InputDecoration(
-       labelText: '15'.tr,
-       prefixIcon: const Icon(Icons.search, color: fiveBackColor),
-       labelStyle: const TextStyle(color: fiveBackColor),
-       enabledBorder: OutlineInputBorder(
-         borderRadius: BorderRadius.circular(15.0),
-         borderSide: const BorderSide(color: fiveBackColor),
-       ),
-       focusedBorder: OutlineInputBorder(
-         borderRadius: BorderRadius.circular(15.0),
-         borderSide: const BorderSide(color: sevenBackColor),
-       ),
-     ),
-   );
+    return TextField(
+      controller: controller,
+      onChanged: onSearchChanged, // استدعاء الدالة عند تغيير النص
+      decoration: InputDecoration(
+        labelText: 'Search...',
+        prefixIcon: Icon(Icons.search, color: Theme.of(context).colorScheme.scrim),
+        labelStyle: TextStyle(color: Theme.of(context).colorScheme.scrim),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15.0),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.scrim),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15.0),
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+      ),
+    );
   }
-
 }

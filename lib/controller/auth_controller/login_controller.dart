@@ -48,15 +48,16 @@ class Logincontroll extends Logincontroller {
 
       if (StatusRequest.success == statusRequest) {
         if (response["success"] == true) {
-          // الحصول على التوكن مباشرة
           String token = response["data"]["token"];
+          int userId = response["data"]["user"]["id"];
           await box.write('token', token);
-          print("token is $token");
-          // عرض رسالة ترحيب
-          Get.snackbar("26".tr, "27".tr);
+          await box.write('id', userId);
+          print("id is $userId");
+          Get.snackbar("Welcome", "Login successful");
           goToHomePage();
         }
       }
+
       else {
         Get.defaultDialog(
             title: "Warning",
@@ -68,10 +69,6 @@ class Logincontroll extends Logincontroller {
       }
       update();
     }
-  }
-
-  void saveUserId(String user_id) {
-    myServices.sharedPreferances.setString("id", user_id);
   }
 
   gotoRegister() {

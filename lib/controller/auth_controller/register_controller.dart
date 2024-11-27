@@ -49,6 +49,10 @@ class Registercontroll extends Registercontroller {
       if (statusRequest == StatusRequest.success ) {
         if (response["success"] == true) {
           String token = response["data"]["token"];
+          int userId = response["data"]["user"]["id"];
+          await box.write('token', token);
+          await box.write('id', userId);
+          print("id is $userId");
           await box.write('token', token);
           print("token is $token");
           Get.snackbar("26".tr, response["message"]);

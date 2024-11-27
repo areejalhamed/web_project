@@ -7,4 +7,6 @@ class Applink{
   static const String searchGroup ="$url/searchGroupByName";
   static const String getAllUsers ="$url/AllUsers";
   static const String getGroupsForUser ="$url/getGroupsForUser";
+  static const String deleteGroup ="$url/deleteGroup";
+  static const String searchUsersName ="$url/searchUsersByName";
 }

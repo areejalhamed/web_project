@@ -86,7 +86,11 @@ class Loginpage extends StatelessWidget {
                             MaterialButtonAuth(
                               text: '5'.tr,
                               onPressed: () {
-                                controller.Login();
+                                if (controller.formstate.currentState!.validate()) {
+                                  controller.Login();
+                                } else {
+                                  Get.snackbar("Error", "Please fill all fields correctly.");
+                                }
                               },
                             ),
                             const SizedBox(

@@ -15,24 +15,21 @@ class GetGroupForUserData {
     print('Loaded token: $token');
 
     var headers = {
-      'Accept': 'application/json',
+      'Accept': '*/*',
       'Authorization': 'Bearer $token',
     };
 
-    // تمرير معرف المستخدم كمعامل للطلب
-    var response = await client.get('${Applink.getGroupsForUser}?user_id=$userId', headers: headers);
+    var url = '${Applink.getGroupsForUser}/$userId';
+    print('Request URL: $url');
+
+    var response = await client.get(url, headers: headers);
 
     if (response.isRight()) {
       var responseData = response.getOrElse(() => {});
 
-      // تحقق أن الاستجابة تحتوي على مفتاح 'data'
       if (responseData is Map && responseData['data'] != null) {
-        // تصفية البيانات بناءً على userId
         List<Map<String, dynamic>> allGroups =
-        List<Map<String, dynamic>>.from(responseData['data'])
-            .where((group) => group['pivot']['user_id'] == userId)
-            .toList();
-
+        List<Map<String, dynamic>>.from(responseData['data']);
         return Right(allGroups);
       } else {
         return const Left(StatusRequest.failure);

@@ -12,6 +12,7 @@ import 'package:project/core/theme/theme.dart'; // استيراد ThemeProvider
 class Drawerpage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     final box = GetStorage();
     print("Available keys in GetStorage: ${box.getKeys()}");
 
@@ -45,20 +46,23 @@ class Drawerpage extends StatelessWidget {
                 text: '12'.tr,
                 icon: const Icon(Icons.create_outlined),
               ),
+
               ListTitleHomePage(
                 onTap: () {
-                  print("userId is ${box.getKeys()}");
-                  // if (userId != null) {
-                  //   // تمرير userId الديناميكي
-                  //   Get.to(GetMyGroups(userId: userId));
-                  // } else {
-                  //   // عرض رسالة خطأ إذا كان userId غير متوفر
-                  //   Get.snackbar("Error", "User ID not found. Please log in again.");
-                  // }
+                  final box = GetStorage();
+                  final userId = box.read('id');  // تأكد من قراءة userId الصحيح
+
+                  if (userId != null && userId is int && userId > 0) {
+                    print("User ID is $userId");
+                    Get.to(() => GetMyGroups(userId: userId));  // تمرير userId إلى الصفحة
+                  } else {
+                    Get.snackbar("Error", "User ID not found or invalid. Please log in again.");
+                  }
                 },
                 text: '50'.tr,
                 icon: const Icon(Icons.group),
               ),
+
               ListTitleHomePage(
                 onTap: () {
                   Get.toNamed(AppRoute.getAllUser);

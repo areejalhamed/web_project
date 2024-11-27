@@ -1,19 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../controller/home_page_controller/add_user_to_group_controller.dart';
 import '../../../controller/home_page_controller/get_all_user_in_system_controller.dart';
+import '../../../controller/home_page_controller/search_user_name_controller.dart';
 import '../../../core/class/crud.dart';
 import '../../../core/class/staterequest.dart';
 import '../../../core/constant/color.dart';
+import '../../../data/dataresource/home_page_data/add_user_to_gruop_data.dart';
 import '../../../data/dataresource/home_page_data/get_all_user_in_system_data.dart';
+import '../../../data/dataresource/home_page_data/search_user_name_data.dart';
 import '../../widget/home_page/Search.dart';
 
 class GetAllUserInSystem extends StatelessWidget {
-  const GetAllUserInSystem({super.key});
+  final int groupId;  // إضافة groupId هنا
+
+  const GetAllUserInSystem({super.key, required this.groupId});  // استقبال groupId من الصفحة السابقة
 
   @override
   Widget build(BuildContext context) {
     final GetAllUserInSystemControllerImp userController =
     Get.put(GetAllUserInSystemControllerImp(GetAllUserInSystemData(Crud())));
+
+    final AddUserToGroupControllerImp addUserToGroupControllerImp =
+    Get.put(AddUserToGroupControllerImp(AddUserToGroupData(Crud()), groupId));
+
+    SearchUserNameControllerImp searchUserNameController =
+    Get.put(SearchUserNameControllerImp(SearchUserNameData(Crud())));
 
     // قائمة لحفظ حالة اختيار المستخدمين
     final selectedUsers = <int>[].obs;
@@ -36,7 +48,13 @@ class GetAllUserInSystem extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Searchpage(),
+            child: SearchPage(
+              onSearchChanged: (id) {
+                // يمكنك إضافة منطق البحث هنا
+                // searchUserNameController.searchUserName(userId);
+              },
+              controller: searchUserNameController.name,
+            ),
           ),
           Expanded(
             child: Obx(() {
@@ -84,6 +102,18 @@ class GetAllUserInSystem extends StatelessWidget {
             }),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          if (selectedUsers.isNotEmpty) {
+            addUserToGroupControllerImp.addUserToGroup(selectedUsers.toList());
+          } else {
+            Get.snackbar("Error", "Please select at least one user.");
+          }
+          print("Floating Action Button Pressed!");
+        },
+        backgroundColor: Colors.blue,
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }

@@ -27,7 +27,7 @@ class Registerpage extends StatelessWidget {
                 child: GetBuilder<Registercontroll>(
                   builder: (controller) => Container(
                     padding:
-                        const EdgeInsets.only(top: 50, right: 150, left: 150),
+                    const EdgeInsets.only(top: 50, right: 150, left: 150),
                     decoration: const BoxDecoration(
                         color: fourBackColor,
                         borderRadius: BorderRadius.only(
@@ -36,9 +36,9 @@ class Registerpage extends StatelessWidget {
                         )),
                     child: Column(
                       children: [
-                         Text(
+                        Text(
                           '8'.tr,
-                          style:const TextStyle(
+                          style: const TextStyle(
                             fontSize: 35,
                             fontWeight: FontWeight.bold,
                           ),
