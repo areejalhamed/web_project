@@ -47,32 +47,32 @@ class ShowConfirmationDialog extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              GestureDetector(
-                onTap: () async {
-                  await addGroupController.pickImage(); // استدعاء دالة اختيار الصورة
-                },
-                child: AbsorbPointer(
-                  child: Textformfieldauth(
-                    mycontroller: addGroupController.imageUrl,
-                    hinttext: 'ادخل رابط صورة المجموعة',
-                    valid: (v) {
-                      if (v!.isEmpty) {
-                        return 'يرجى إدخال رابط الصورة';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      hintText: 'ادخل رابط صورة المجموعة',
-                      hintStyle: TextStyle(color: Colors.grey[600]),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              // GestureDetector(
+              //   onTap: () async {
+              //     await addGroupController.pickImage(); // استدعاء دالة اختيار الصورة
+              //   },
+              //   child: AbsorbPointer(
+              //     child: Textformfieldauth(
+              //       mycontroller: addGroupController.imageUrl,
+              //       hinttext: 'ادخل رابط صورة المجموعة',
+              //       valid: (v) {
+              //         if (v!.isEmpty) {
+              //           return 'يرجى إدخال رابط الصورة';
+              //         }
+              //         return null;
+              //       },
+              //       decoration: InputDecoration(
+              //         filled: true,
+              //         fillColor: Colors.white,
+              //         hintText: 'ادخل رابط صورة المجموعة',
+              //         hintStyle: TextStyle(color: Colors.grey[600]),
+              //         border: OutlineInputBorder(
+              //           borderRadius: BorderRadius.circular(8),
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
               const SizedBox(height: 10),
             ],
           ),

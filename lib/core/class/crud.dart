@@ -3,10 +3,9 @@ import 'package:http/http.dart' as http;
 import 'package:project/core/class/staterequest.dart';
 import 'package:dartz/dartz.dart';
 import 'package:project/data/dataresource/home_page_data/delete_group_data.dart';
+import 'package:dio/dio.dart';
 
 class Crud {
-
-
   String? globalAuthorizationToken;
 
   Future<Either<StatusRequest, Map>> post(String url, Map data) async {
@@ -22,13 +21,11 @@ class Crud {
       print('Response Body: $responseBody');
       print("StatusCode: ${response.statusCode}");
 
-
       // استخراج رمز المصادقة من حقل data إذا كان موجوداً
       if (responseBody.containsKey("data")) {
-           globalAuthorizationToken = responseBody["data"]["token"] ;
-            print('Token : $globalAuthorizationToken');
-      }
-      else {
+        globalAuthorizationToken = responseBody["data"]["token"];
+        print('Token : $globalAuthorizationToken');
+      } else {
         print('Authorization token not found in response body.');
       }
 
@@ -82,7 +79,10 @@ class Crud {
     }
   }
 
-  Future<Either<StatusRequest, Map>> postMultipart(String url, {Map<String, String>? headers, Map<String, String>? fields,}) async {
+  Future<Either<StatusRequest, Map>> postMultipart(String url, {
+    Map<String, String>? headers,
+    Map<String, String>? fields,
+  }) async {
     try {
       var request = http.MultipartRequest('POST', Uri.parse(url));
 
@@ -97,18 +97,19 @@ class Crud {
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
 
-      var responseBody = jsonDecode(response.body);
-      print('Response Body: $responseBody');
-      print("StatusCode: ${response.statusCode}");
+      print('Response Body: ${response.body}');
+      print("Status Code: ${response.statusCode}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        // تحليل الاستجابة إلى JSON
+        var responseBody = jsonDecode(response.body);
         return Right(responseBody);
       } else {
         return const Left(StatusRequest.serverfailure);
       }
     } catch (e) {
       print('Exception in post request: $e');
-      return Left(StatusRequest.offlinefailure);
+      return const Left(StatusRequest.offlinefailure);
     }
   }
 
@@ -164,4 +165,6 @@ class Crud {
       return Left(StatusRequest.offlinefailure);
     }
   }
+
+
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class SearchPage extends StatelessWidget {
 
-  final Function(String) onSearchChanged; // ميثود يتم تمريرها من الواجهة
+  final Function(String) onSearchChanged;
   final TextEditingController controller;
 
   const SearchPage({
@@ -15,7 +15,7 @@ class SearchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-      onChanged: onSearchChanged, // استدعاء الدالة عند تغيير النص
+      onChanged: onSearchChanged,
       decoration: InputDecoration(
         labelText: 'Search...',
         prefixIcon: Icon(Icons.search, color: Theme.of(context).colorScheme.scrim),

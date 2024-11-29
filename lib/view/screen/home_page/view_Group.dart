@@ -7,47 +7,67 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project/controller/home_page_controller/add_file_to_group_controller.dart';
 import '../../../controller/home_page_controller/add_user_to_group_controller.dart';
+import '../../../controller/home_page_controller/check_in_controller.dart';
+import '../../../controller/home_page_controller/delete_file_controller.dart';
 import '../../../controller/home_page_controller/delete_group_controller.dart';
 import '../../../controller/home_page_controller/get_file_from_group_controller.dart';
 import '../../../core/class/crud.dart';
 import '../../../core/class/staterequest.dart';
 import '../../../core/constant/color.dart';
 import '../../../data/dataresource/home_page_data/add_user_to_gruop_data.dart';
+import '../../../data/dataresource/home_page_data/delete_file_data.dart';
 import '../../../data/dataresource/home_page_data/delete_group_data.dart';
 import '../../../data/dataresource/home_page_data/get_file_from_group_data.dart';
 import '../../widget/home_page/view_pdf.dart';
+import 'get_report.dart';
 import 'get_user_all.dart';
 import 'get_user_all_in_system.dart';
 
 class ViewGroup extends StatelessWidget {
   final String groupName;
   final int groupId;
+
   final AddFileToGroupControllerImp controller =
-      Get.put(AddFileToGroupControllerImp(Get.find()));
+  Get.put(AddFileToGroupControllerImp(Get.find()));
+
+  final RxList<int> filesId = <int>[].obs;
 
   ViewGroup({super.key, required this.groupName, required this.groupId});
 
   @override
   Widget build(BuildContext context) {
-
     Get.lazyPut(() => GetFileFromGroupControllerImp(GetFileFromGroupData(Crud()), groupId));
 
     final GetFileFromGroupControllerImp getFileFromGroupControllerImp = Get.find<GetFileFromGroupControllerImp>();
+    final DeleteFileControllerImp deleteFileControllerImp = Get.find<DeleteFileControllerImp>();
+    final CheckInControllerImp checkInControllerImp = Get.find<CheckInControllerImp>();
     final DeleteGroupControllerImp deleteGroupControllerImp = Get.find<DeleteGroupControllerImp>();
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: sevenBackColor,
         title: Text(
-          groupName,
+          "$groupName",
           style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh, color: Colors.white),
             onPressed: () {
+             filesId.clear();
               getFileFromGroupControllerImp.getFile(groupId);
             },
+          ),
+          const SizedBox(width: 8.0),
+          Container(
+            padding: const EdgeInsets.all(8),
+            color: sevenBackColor,
+            child: TextButton(
+              child: const Text("Reserved" , style: TextStyle(color: white),),
+              onPressed: () {
+                checkInControllerImp.checkIn(filesId);
+              },
+            ),
           ),
           const SizedBox(width: 8.0),
           PopupMenuButton<String>(
@@ -66,12 +86,11 @@ class ViewGroup extends StatelessWidget {
                   value: 'Add User',
                   child: TextButton(
                     onPressed: () {
-                      Get.to(GetAllUserInSystem(groupId: groupId));  // تمرير groupId
+                      Get.to(GetAllUserInSystem(groupId: groupId)); // تمرير groupId
                     },
                     child: const Text("Add User"),
                   ),
                 ),
-
                 PopupMenuItem(
                   value: 'Delete Group',
                   child: TextButton(
@@ -113,13 +132,41 @@ class ViewGroup extends StatelessWidget {
                     itemCount: getFileFromGroupControllerImp.files.length,
                     itemBuilder: (context, index) {
                       final file = getFileFromGroupControllerImp.files[index];
-                      final fileName = file['name'] ?? ''; // اسم الملف
-                      final filePath = "http://127.0.0.1:8000/storage/uploads/$fileName"; // المسار الكامل
+                      final fileId = file['id']; // افترض وجود ID لكل ملف
+                      final fileName = file['name'] ?? '';
+                      final filePath = "http://127.0.0.1:8000${file['path'] ?? ''}";
+                      final statusTitle = file['status']?['title'] ?? 'Unknown Status';
 
                       return ListTile(
                         title: Text(fileName),
-                        subtitle: Text(filePath),
+                        subtitle: Text('$statusTitle', style: const TextStyle(color: Colors.green)),
                         leading: const Icon(Icons.picture_as_pdf, color: Colors.red),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Obx(() {
+                              final isSelected = filesId.contains(fileId);
+
+                              return Checkbox(
+                                value: isSelected,
+                                onChanged: (value) {
+                                  if (value == true && fileId != null) {
+                                    filesId.add(fileId); // إضافة ID الملف إلى المصفوفة
+                                  } else {
+                                    filesId.remove(fileId); // إزالة ID الملف من المصفوفة
+                                  }
+                                },
+                              );
+                            }),
+                            IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              onPressed: () async {
+                                await deleteFileControllerImp.deleteFile2(fileId);
+                                await getFileFromGroupControllerImp.getFile(groupId);
+                              },
+                            ),
+                          ],
+                        ),
                         onTap: () {
                           print("File path tapped: $filePath");
                           Get.to(() => PdfViewerScreen(pdfPath: filePath));
@@ -149,7 +196,7 @@ class ViewGroup extends StatelessWidget {
                 const SizedBox(width: 10),
                 FloatingActionButton(
                   onPressed: () => _handleFileUpload(),
-                  child: Icon(Icons.upload_file),
+                  child: const Icon(Icons.upload_file),
                   tooltip: "45".tr,
                 ),
               ],

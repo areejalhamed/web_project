@@ -10,10 +10,9 @@ abstract class AddUserToGroupController extends GetxController {
 
 class AddUserToGroupControllerImp extends AddUserToGroupController {
   final AddUserToGroupData userData;
-  final int groupId; // تعريف groupId هنا
+  final int groupId;
   StatusRequest? statusRequest;
 
-  // تعديل الـ Constructor لتمرير groupId
   AddUserToGroupControllerImp(this.userData, this.groupId);
 
   @override
@@ -27,15 +26,15 @@ class AddUserToGroupControllerImp extends AddUserToGroupController {
     update();
 
     try {
-      // إرسال المعرفات والمجموعة
       var response = await userData.postMultipart(userIds, groupId);
       statusRequest = handlingData(response);
 
       if (statusRequest == StatusRequest.success) {
         Get.snackbar("Success", "Users added to group successfully.");
-        print("Response body: ${response.body}");
+        print("Response: $response");
       } else {
         Get.snackbar("Error", "Failed to add users to group.");
+        print("Response error: $response");
       }
     } catch (e) {
       print("Error occurred: $e");

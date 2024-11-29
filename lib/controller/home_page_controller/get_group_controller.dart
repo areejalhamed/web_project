@@ -24,8 +24,7 @@ class GetAllGroupControllerImp extends GetAllGroupController {
 
   @override
   Future<void> getGroup() async {
-    statusRequest.value = StatusRequest.loading; // أثناء التحميل
-    // No need to call update() manually as GetX reacts to Rx changes
+    statusRequest.value = StatusRequest.loading;
 
     try {
       var response = await getGroupData.get();

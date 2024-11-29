@@ -2,17 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project/core/constant/routes.dart';
+import 'package:project/data/dataresource/home_page_data/delete_file_data.dart';
+import 'package:project/data/dataresource/home_page_data/delete_group_data.dart';
 import 'package:project/view/screen/home_page/view_Group.dart';
-import 'package:project/view/widget/home_page/Search.dart';
+import '../../../controller/home_page_controller/check_in_controller.dart';
+import '../../../controller/home_page_controller/delete_file_controller.dart';
 import '../../../controller/home_page_controller/get_group_controller.dart';
-import '../../../controller/home_page_controller/search_group_controller.dart';
+import '../../../controller/home_page_controller/search_user_name_controller.dart';
 import '../../../core/class/crud.dart';
 import '../../../core/class/staterequest.dart';
-import '../../../core/constant/color.dart';
-import '../../../core/local/local_controller.dart';
+import '../../../data/dataresource/home_page_data/check_in_data.dart';
 import '../../../data/dataresource/home_page_data/get_group_data.dart';
-import '../../../data/dataresource/home_page_data/search_group_data.dart';
-import '../../widget/home_page/list_title.dart';
+import '../../../data/dataresource/home_page_data/search_user_name_data.dart';
+import '../../widget/home_page/Search.dart';
 import 'drawer.dart';
 
 class HomePage extends StatefulWidget {
@@ -23,8 +25,36 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late int groupId;
+
   final GetAllGroupControllerImp groupController =
-      Get.put(GetAllGroupControllerImp(GetAllGroupData(Crud())));
+  Get.put(GetAllGroupControllerImp(GetAllGroupData(Crud())));
+
+  final SearchUserNameControllerImp searchUserNameController =
+  Get.put(SearchUserNameControllerImp(SearchUserNameData(Crud())));
+
+  @override
+  void initState() {
+    super.initState();
+    // Load groups dynamically
+    groupController.getGroup();
+
+    // Listen to the status of group fetching and initialize CheckInControllerImp dynamically for each group
+    groupController.statusRequest.listen((status) {
+      if (status == StatusRequest.success && groupController.groups.isNotEmpty) {
+        // Loop through all the groups and initialize CheckInControllerImp dynamically
+        for (var group in groupController.groups) {
+          groupId = group['id']; // Get the group ID dynamically
+          // Ensure that the controller is initialized for the group if not already
+          if (!Get.isRegistered<CheckInControllerImp>()) {
+            Get.put(CheckInControllerImp(CheckInData(Crud()), groupId));
+          }
+        }
+      }
+    });
+
+    Get.put(DeleteFileControllerImp(DeleteFileData(Crud())));
+  }
 
 
   @override
@@ -36,7 +66,15 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             child: Column(
               children: [
-                // Header
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: SearchPage(
+                //     onSearchChanged: (query) {
+                //       searchUserNameController.searchUserName(query);
+                //     },
+                //     controller: searchUserNameController.name,
+                //   ),
+                // ),
                 Container(
                   padding: const EdgeInsets.all(16.0),
                   color: Theme.of(context).colorScheme.primary,
@@ -114,41 +152,33 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                // Search bar
-                // Padding(
-                //   padding: const EdgeInsets.all(16.0),
-                //   child: SearchPage(
-                //       onSearchChanged: (v){},
-                //       controller: ), // البحث
-                // ),
-                // Body content
                 Expanded(
                   child: Obx(() {
                     if (groupController.statusRequest.value == StatusRequest.loading) {
-                      return const Center(child: CircularProgressIndicator()); // عرض مؤشر التحميل إذا كانت البيانات قيد التحميل
+                      return const Center(child: CircularProgressIndicator());
                     }
 
                     // عرض نتائج البحث إذا كانت موجودة
                     final results = groupController.searchResults;
-                    final groups = results.isNotEmpty ? results : groupController.groups; // استخدام نتائج البحث أو البيانات الأصلية إذا كانت فارغة
+                    final groups = results.isNotEmpty ? results : groupController.groups;
 
                     if (groups.isEmpty) {
-                      return const Center(child: Text('لا توجد مجموعات للعرض.')); // عرض رسالة إذا لم توجد نتائج
+                      return const Center(child: Text('لا توجد مجموعات للعرض.'));
                     }
 
                     return GridView.builder(
                       padding: const EdgeInsets.all(16.0),
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4, // عدد الأعمدة
-                        crossAxisSpacing: 16.0, // المسافة بين الأعمدة
-                        mainAxisSpacing: 16.0, // المسافة بين الصفوف
-                        childAspectRatio: 3 / 2, // نسبة العرض إلى الارتفاع
+                        crossAxisCount: 4,
+                        crossAxisSpacing: 16.0,
+                        mainAxisSpacing: 16.0,
+                        childAspectRatio: 3 / 2,
                       ),
                       itemCount: groups.length,
                       itemBuilder: (context, index) {
                         final group = groups[index];
                         if (group == null) {
-                          return const SizedBox(); // تجنب عرض عنصر فارغ
+                          return const SizedBox();
                         }
 
                         return Container(
@@ -168,7 +198,6 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // عرض صورة المجموعة أو أيقونة افتراضية
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(8.0),
                                 child: (group['image'] != null && Uri.tryParse(group['image'])?.isAbsolute == true)
@@ -192,7 +221,6 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               const SizedBox(height: 8.0),
-                              // اسم المجموعة
                               Expanded(
                                 child: InkWell(
                                   onTap: () {
@@ -208,6 +236,9 @@ class _HomePageState extends State<HomePage> {
                                       );
                                       return;
                                     }
+
+                                    // Ensure CheckInControllerImp is initialized before navigating to ViewGroup
+                                    Get.put(CheckInControllerImp(CheckInData(Crud()), groupId)); // Ensure the controller is initialized
 
                                     // الانتقال إلى صفحة التفاصيل
                                     Navigator.push(
@@ -228,11 +259,10 @@ class _HomePageState extends State<HomePage> {
                                       color: Theme.of(context).colorScheme.background,
                                     ),
                                     maxLines: 2,
-                                    overflow: TextOverflow.ellipsis, // تقليص النص في حال طوله
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               ),
-                              // زر الانضمام للمجموعة
                               IconButton(
                                 icon: Icon(Icons.join_left, color: Theme.of(context).colorScheme.background),
                                 onPressed: () {

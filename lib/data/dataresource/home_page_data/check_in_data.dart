@@ -3,15 +3,17 @@ import 'package:get_storage/get_storage.dart';
 import '../../../applink.dart';
 import '../../../core/class/crud.dart';
 
-class AddUserToGroupData {
+class CheckInData {
   final Crud client;
-  AddUserToGroupData(this.client);
 
-  Future postMultipart(List<int> userIds, int groupId) async {
+  CheckInData(this.client);
+
+  Future postMultipart(List<int> fileIds, int groupId) async {
     String? token = GetStorage().read('token');
+
     if (token == null) {
       print("Error: Missing Authorization token.");
-      return "Error: Unauthorized.";
+      return {"status": "error", "message": "Unauthorized."};
     }
 
     var headers = {
@@ -19,41 +21,41 @@ class AddUserToGroupData {
       'Authorization': 'Bearer $token',
     };
 
-    // إعداد الحقول بالطريقة المطلوبة
-    Map<String, String> fields = {};
-    for (int i = 0; i < userIds.length; i++) {
-      fields['user_ids[$i]'] = userIds[i].toString(); // إضافة المعرفات بالتنسيق المطلوب
+    Map<String, String> fields = {
+      'groupId': groupId.toString(),
+    };
+
+    for (int i = 0; i < fileIds.length; i++) {
+      fields['file_ids[$i]'] = fileIds[i].toString();
     }
 
-    print("Token is $token");
+    print("Token: $token");
     print("Sending fields: $fields");
 
     try {
       var response = await client.postMultipart(
-        "${Applink.url}/addUsersToGroup/$groupId",
+        "${Applink.url}/files/check-in",
         fields: fields,
         headers: headers,
       );
 
       print("Response received: $response");
 
-      // التحقق من نوع الاستجابة
       if (response is String) {
         try {
-          var jsonResponse = jsonDecode(response as String);
+          var jsonResponse = jsonDecode(response as String); // Decoding response if it's a string
           print("Decoded JSON response: $jsonResponse");
           return jsonResponse;
         } catch (e) {
           print("Failed to decode JSON: $e");
-          return "Error: Invalid response format.";
+          return {"status": "error", "message": "Invalid response format."};
         }
       } else {
-        print("Unexpected response type: ${response.runtimeType}");
-        return "Error: Unexpected response type.";
+        return response; // Return the response directly if it's already a map
       }
     } catch (e) {
       print("Exception in post request: $e");
-      return "Error: Exception occurred during request.";
+      return {"status": "error", "message": "Exception occurred during request."};
     }
   }
 }

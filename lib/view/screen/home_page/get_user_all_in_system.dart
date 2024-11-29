@@ -12,19 +12,20 @@ import '../../../data/dataresource/home_page_data/search_user_name_data.dart';
 import '../../widget/home_page/Search.dart';
 
 class GetAllUserInSystem extends StatelessWidget {
-  final int groupId;  // إضافة groupId هنا
+  final int groupId; // استقبال groupId من الصفحة السابقة
 
-  const GetAllUserInSystem({super.key, required this.groupId});  // استقبال groupId من الصفحة السابقة
+  const GetAllUserInSystem({super.key, required this.groupId});
 
   @override
   Widget build(BuildContext context) {
+    // Controllers
     final GetAllUserInSystemControllerImp userController =
     Get.put(GetAllUserInSystemControllerImp(GetAllUserInSystemData(Crud())));
 
     final AddUserToGroupControllerImp addUserToGroupControllerImp =
     Get.put(AddUserToGroupControllerImp(AddUserToGroupData(Crud()), groupId));
 
-    SearchUserNameControllerImp searchUserNameController =
+    final SearchUserNameControllerImp searchUserNameController =
     Get.put(SearchUserNameControllerImp(SearchUserNameData(Crud())));
 
     // قائمة لحفظ حالة اختيار المستخدمين
@@ -49,9 +50,8 @@ class GetAllUserInSystem extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SearchPage(
-              onSearchChanged: (id) {
-                // يمكنك إضافة منطق البحث هنا
-                // searchUserNameController.searchUserName(userId);
+              onSearchChanged: (query) {
+                searchUserNameController.searchUserName(query as int);
               },
               controller: searchUserNameController.name,
             ),
@@ -60,6 +60,8 @@ class GetAllUserInSystem extends StatelessWidget {
             child: Obx(() {
               if (userController.statusRequest.value == StatusRequest.loading) {
                 return const Center(child: CircularProgressIndicator());
+              } else if (userController.statusRequest.value == StatusRequest.failure) {
+                return const Center(child: Text("Failed to load users."));
               } else if (userController.users.isEmpty) {
                 return const Center(child: Text("No users found."));
               } else {

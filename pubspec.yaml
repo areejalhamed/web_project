@@ -40,6 +40,7 @@ dependencies:
   path_provider:
   provider: ^6.0.0
   image_picker:
+  dio:
   syncfusion_flutter_pdfviewer:
   http: ^0.13.5
   dartz: ^0.10.1

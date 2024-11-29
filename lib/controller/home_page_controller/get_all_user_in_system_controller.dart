@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import '../../core/class/staterequest.dart';
-import '../../core/function/handlingdata.dart';
 import '../../data/dataresource/home_page_data/get_all_user_in_system_data.dart';
 
 abstract class GetAllUserInSystemController extends GetxController {

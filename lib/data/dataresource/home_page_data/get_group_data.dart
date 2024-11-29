@@ -6,30 +6,27 @@ import '../../../core/class/staterequest.dart';
 
 class GetAllGroupData {
   final Crud client;
-  final box = GetStorage();
 
   GetAllGroupData(this.client);
 
-  Future<Either<StatusRequest, List>> get() async {
-    String? token = box.read('token');
-    print('Loaded token: $token');
+  Future get() async {
+    String? token = GetStorage().read('token');
+    if (token == null) {
+      throw Exception("Token not found in GetStorage.");
+    }
 
     var headers = {
-      'Accept': 'application/json',
       'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
     };
 
-    var response = await client.get(
-      Applink.getAllGroup,
-      headers: headers,
-    );
-
-    if (response.isRight()) {
-      // تحقق أن الاستجابة بالفعل قائمة من العناصر
-      List<dynamic> responseData = response.getOrElse(() => []);
-      return Right(responseData);
-    } else {
-      return const Left(StatusRequest.failure);
+    try {
+      var response = await client.get('${Applink.url}/getAllGroups', headers: headers);
+      print("Response Body: ${response}");
+      return response;
+    } catch (e) {
+      print("Error in get request: $e");
+      return {'status': false, 'message': 'Error occurred during request'};
     }
   }
 }
