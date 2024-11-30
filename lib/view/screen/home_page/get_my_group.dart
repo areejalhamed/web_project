@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:project/data/dataresource/home_page_data/check_in_data.dart';
 import 'package:project/view/screen/home_page/view_Group.dart';
+import '../../../controller/home_page_controller/check_in_controller.dart';
 import '../../../controller/home_page_controller/get_group_for_user_controller.dart';
 import '../../../core/class/crud.dart';
 import '../../../core/class/staterequest.dart';
@@ -20,7 +22,10 @@ class GetMyGroups extends StatelessWidget {
       GetGroupForUserControllerImp(GetGroupForUserData(Crud())),
     );
 
-    // جلب الغروبات
+    // if (!Get.isRegistered<CheckInControllerImp>()) {
+    //   Get.lazyPut(() => CheckInControllerImp(CheckInData(Crud()), groupId));
+    // }
+
     groupController.getMyGroups(userId);
 
     return Scaffold(

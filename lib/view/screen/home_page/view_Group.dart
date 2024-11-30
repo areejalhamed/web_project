@@ -6,11 +6,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project/controller/home_page_controller/add_file_to_group_controller.dart';
+import 'package:project/data/dataresource/home_page_data/get_report_dara.dart';
 import '../../../controller/home_page_controller/add_user_to_group_controller.dart';
 import '../../../controller/home_page_controller/check_in_controller.dart';
 import '../../../controller/home_page_controller/delete_file_controller.dart';
 import '../../../controller/home_page_controller/delete_group_controller.dart';
 import '../../../controller/home_page_controller/get_file_from_group_controller.dart';
+import '../../../controller/home_page_controller/get_report_controller.dart';
 import '../../../core/class/crud.dart';
 import '../../../core/class/staterequest.dart';
 import '../../../core/constant/color.dart';
@@ -37,11 +39,13 @@ class ViewGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.lazyPut(() => GetFileFromGroupControllerImp(GetFileFromGroupData(Crud()), groupId));
+    Get.lazyPut(() => GetReportControllerImp(GetReportData(Crud()), groupId));
 
     final GetFileFromGroupControllerImp getFileFromGroupControllerImp = Get.find<GetFileFromGroupControllerImp>();
     final DeleteFileControllerImp deleteFileControllerImp = Get.find<DeleteFileControllerImp>();
     final CheckInControllerImp checkInControllerImp = Get.find<CheckInControllerImp>();
     final DeleteGroupControllerImp deleteGroupControllerImp = Get.find<DeleteGroupControllerImp>();
+    final GetReportControllerImp getReportControllerImp = Get.find<GetReportControllerImp>();
 
     return Scaffold(
       appBar: AppBar(
@@ -98,6 +102,15 @@ class ViewGroup extends StatelessWidget {
                       deleteGroupControllerImp.deleteGroup(groupId); // حذف المجموعة مباشرة
                     },
                     child: const Text("Delete Group"),
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 'Leave Group',
+                  child: TextButton(
+                    onPressed: () {
+                    //  deleteGroupControllerImp.deleteGroup(groupId); // حذف المجموعة مباشرة
+                    },
+                    child: const Text("Leave Group"),
                   ),
                 ),
               ];
@@ -163,6 +176,12 @@ class ViewGroup extends StatelessWidget {
                               onPressed: () async {
                                 await deleteFileControllerImp.deleteFile2(fileId);
                                 await getFileFromGroupControllerImp.getFile(groupId);
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.report_gmailerrorred_outlined, color: Colors.black),
+                              onPressed: () async {
+                                await getReportControllerImp.getReport(groupId);
                               },
                             ),
                           ],

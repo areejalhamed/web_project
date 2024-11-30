@@ -51,7 +51,6 @@ class Drawerpage extends StatelessWidget {
                 onTap: () {
                   final box = GetStorage();
                   final userId = box.read('id');  // تأكد من قراءة userId الصحيح
-
                   if (userId != null && userId is int && userId > 0) {
                     print("User ID is $userId");
                     Get.to(() => GetMyGroups(userId: userId));  // تمرير userId إلى الصفحة

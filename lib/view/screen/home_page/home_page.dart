@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project/core/constant/routes.dart';
 import 'package:project/data/dataresource/home_page_data/delete_file_data.dart';
-import 'package:project/data/dataresource/home_page_data/delete_group_data.dart';
+import 'package:project/data/dataresource/home_page_data/get_report_dara.dart';
 import 'package:project/view/screen/home_page/view_Group.dart';
 import '../../../controller/home_page_controller/check_in_controller.dart';
 import '../../../controller/home_page_controller/delete_file_controller.dart';
 import '../../../controller/home_page_controller/get_group_controller.dart';
+import '../../../controller/home_page_controller/get_report_controller.dart';
 import '../../../controller/home_page_controller/search_user_name_controller.dart';
 import '../../../core/class/crud.dart';
 import '../../../core/class/staterequest.dart';
 import '../../../data/dataresource/home_page_data/check_in_data.dart';
 import '../../../data/dataresource/home_page_data/get_group_data.dart';
 import '../../../data/dataresource/home_page_data/search_user_name_data.dart';
-import '../../widget/home_page/Search.dart';
 import 'drawer.dart';
 
 class HomePage extends StatefulWidget {
@@ -48,6 +48,8 @@ class _HomePageState extends State<HomePage> {
           // Ensure that the controller is initialized for the group if not already
           if (!Get.isRegistered<CheckInControllerImp>()) {
             Get.put(CheckInControllerImp(CheckInData(Crud()), groupId));
+            Get.lazyPut(() => GetReportControllerImp(GetReportData(Crud()), groupId));
+
           }
         }
       }

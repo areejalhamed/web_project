@@ -4,6 +4,7 @@ import '../../core/class/staterequest.dart';
 import '../../core/function/handlingdata.dart';
 import '../../data/dataresource/home_page_data/get_report_dara.dart';
 import '../../data/dataresource/home_page_data/get_user_data.dart';
+import '../../view/screen/home_page/get_report.dart';
 
 abstract class GetReportController extends GetxController {
   getReport(int groupId); // تعديل هنا لإضافة المعلمة
@@ -51,7 +52,7 @@ class GetReportControllerImp extends GetReportController {
       if (statusRequest.value == StatusRequest.success && response.isRight()) {
         users.assignAll(response.getOrElse(() => []));
         print("Reports data in controller: $users");
-        Get.snackbar("Success", "Reports fetched successfully");
+        Get.to(GetReport(groupId: groupId,));
       } else {
         Get.snackbar("Error", "Failed to load reports.");
       }

@@ -82,7 +82,7 @@ class GetAllUserInSystem extends StatelessWidget {
                             style: const TextStyle(color: Colors.black),
                           ),
                         ),
-                        title: Text(user['name']),
+                        title: Text(user['name']  ?? 'Unknown User'),
                         subtitle: Text(user['email']),
                         trailing: Obx(() {
                           return Checkbox(

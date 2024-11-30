@@ -15,11 +15,14 @@ class GetAllUserInSystemData {
     print('Loaded token: $token');
 
     var headers = {
-      'Accept': 'application/json',
+      'Accept': '*/*',
       'Authorization': 'Bearer $token',
     };
 
-    var response = await client.get(Applink.getAllUsers, headers: headers);
+    var response = await client.get(
+        Applink.getAllUsers,
+        headers: headers
+    );
 
     if (response.isRight()) {
       var responseData = response.getOrElse(() => {});

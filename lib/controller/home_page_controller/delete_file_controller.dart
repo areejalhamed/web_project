@@ -32,7 +32,7 @@ class DeleteFileControllerImp extends GetxController {
 
       if (statusRequest == StatusRequest.success) {
         print("Response data: $response");
-        Get.snackbar("نجاح", "تم حذف المجموعة بنجاح");
+        Get.snackbar("", "${response}");
       } else {
         print("فشل الحذف: $response");
         Get.snackbar("خطأ", "تعذر حذف المجموعة");
