@@ -13,7 +13,6 @@ ThemeData lightMode = ThemeData(
     tertiaryContainer: sixBackColor,
     //tertiaryFixed: green,
     //tertiaryFixedDim: Colors.grey[200],
-
   ),
 );
 
