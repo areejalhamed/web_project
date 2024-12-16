@@ -7,7 +7,6 @@ import '../core/class/crud.dart';
 class initalBindings extends Bindings{
   @override
   void dependencies() {
-
     Get.put(Crud());
 
   }

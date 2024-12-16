@@ -6,7 +6,7 @@ import 'package:dartz/dartz.dart';
 class Crud {
   String? globalAuthorizationToken;
 
-  Future<Either<StatusRequest, Map>> post(String url, Map data) async {
+  Future<Either<StatusRequest, Map>> post(String url, Map data, {required Map<String, String> headers}) async {
     try {
       var response = await http.post(
         Uri.parse(url),

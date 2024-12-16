@@ -1,8 +1,6 @@
-import 'package:dartz/dartz.dart';
 import 'package:get_storage/get_storage.dart';
 import '../../../applink.dart';
 import '../../../core/class/crud.dart';
-import '../../../core/class/staterequest.dart';
 
 class GetAllGroupData {
   final Crud client;

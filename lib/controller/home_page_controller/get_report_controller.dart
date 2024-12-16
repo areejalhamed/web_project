@@ -11,57 +11,43 @@ abstract class GetReportController extends GetxController {
 }
 
 class GetReportControllerImp extends GetReportController {
-  final GetReportData getGroupData;
 
+  final GetReportData getReportData;
   var fileId = 0.obs;
-
   var statusRequest = StatusRequest.loading.obs;
-  var users = <Map<String, dynamic>>[].obs;
+  var report = <Map<String, dynamic>>[].obs;
 
-  GetReportControllerImp(this.getGroupData ,  int initialGroupId){
-    fileId(initialGroupId); // تعيين المجموعة الأولى عند الإنشاء
-
-  }
+  GetReportControllerImp(this.getReportData);
 
   @override
   void onInit() {
-    ever(fileId, (int groupId) {
-      getReport(groupId);
-    });
+    super.onInit();
     getReport(fileId.value);
   }
 
   @override
   Future<void> getReport(int groupId) async {
+
     statusRequest(StatusRequest.loading);
     update();
 
     try {
-      print("Fetching reports for group ID: $groupId");
-      var response = await getGroupData.get(groupId);
-      print("Response: $response");
+      var response = await getReportData.get(groupId);
 
-      if (response == null) {
-        Get.snackbar("Error", "Failed to load reports. Null response.");
-        statusRequest(StatusRequest.failure);
-        update();
-        return;
-      }
-
-      statusRequest(handlingData(response));
-      if (statusRequest.value == StatusRequest.success && response.isRight()) {
-        users.assignAll(response.getOrElse(() => []));
-        print("Reports data in controller: $users");
-        Get.to(GetReport(groupId: groupId,));
+      statusRequest.value = handlingData(response);
+      if (statusRequest.value == StatusRequest.success) {
+        if (response.isRight()) {
+          report.value = response.getOrElse(() => []); // Update groups value
+          // print("report data in controller: $report");
+          Get.snackbar("Success", "success to fetch report.");
+        }
       } else {
-        Get.snackbar("Error", "Failed to load reports.");
+        Get.snackbar("Error", "Failed to fetch report.");
       }
     } catch (e) {
       print("Error occurred: $e");
-      Get.snackbar("Error", "An error occurred while fetching the reports.");
-      statusRequest(StatusRequest.failure);
-    } finally {
-      update();
+      Get.snackbar("Error", "An error occurred while fetching the groups.");
+      statusRequest.value = StatusRequest.failure;
     }
   }
 }

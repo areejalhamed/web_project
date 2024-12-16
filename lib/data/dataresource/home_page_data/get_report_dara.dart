@@ -11,7 +11,7 @@ class GetReportData {
 
   GetReportData(this.client);
 
-  Future<Either<StatusRequest, List<Map<String, dynamic>>>> get(int groupId) async {
+  Future get(int groupId) async {
     String? token = box.read('token');
     print('Loaded token: $token');
 

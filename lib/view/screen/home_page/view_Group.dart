@@ -2,28 +2,32 @@ import 'dart:async';
 import 'dart:html' as html;
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:project/controller/home_page_controller/add_file_to_group_controller.dart';
 import 'package:project/data/dataresource/home_page_data/get_report_dara.dart';
-import '../../../controller/home_page_controller/add_user_to_group_controller.dart';
 import '../../../controller/home_page_controller/check_in_controller.dart';
+import '../../../controller/home_page_controller/check_out_file_controller.dart';
 import '../../../controller/home_page_controller/delete_file_controller.dart';
 import '../../../controller/home_page_controller/delete_group_controller.dart';
+import '../../../controller/home_page_controller/download_file_controller.dart';
 import '../../../controller/home_page_controller/get_file_from_group_controller.dart';
 import '../../../controller/home_page_controller/get_report_controller.dart';
+import '../../../controller/home_page_controller/leave_group_controller.dart';
+import '../../../controller/home_page_controller/update_file_controller.dart';
 import '../../../core/class/crud.dart';
 import '../../../core/class/staterequest.dart';
 import '../../../core/constant/color.dart';
-import '../../../data/dataresource/home_page_data/add_user_to_gruop_data.dart';
-import '../../../data/dataresource/home_page_data/delete_file_data.dart';
-import '../../../data/dataresource/home_page_data/delete_group_data.dart';
 import '../../../data/dataresource/home_page_data/get_file_from_group_data.dart';
+import '../../../data/dataresource/home_page_data/leave_group_data.dart';
 import '../../widget/home_page/view_pdf.dart';
-import 'get_report.dart';
 import 'get_user_all.dart';
 import 'get_user_all_in_system.dart';
+// import 'dart:typed_data';
+
 
 class ViewGroup extends StatelessWidget {
   final String groupName;
@@ -32,20 +36,35 @@ class ViewGroup extends StatelessWidget {
   final AddFileToGroupControllerImp controller =
   Get.put(AddFileToGroupControllerImp(Get.find()));
 
+  final UpdateFileControllerImp updateFileControllerImp = Get.find<UpdateFileControllerImp>();
+
   final RxList<int> filesId = <int>[].obs;
 
   ViewGroup({super.key, required this.groupName, required this.groupId});
 
   @override
   Widget build(BuildContext context) {
-    Get.lazyPut(() => GetFileFromGroupControllerImp(GetFileFromGroupData(Crud()), groupId));
-    Get.lazyPut(() => GetReportControllerImp(GetReportData(Crud()), groupId));
+    Get.lazyPut(() =>
+        GetFileFromGroupControllerImp(GetFileFromGroupData(Crud()), groupId));
+    Get.lazyPut(() => GetReportControllerImp(GetReportData(Crud())));
 
-    final GetFileFromGroupControllerImp getFileFromGroupControllerImp = Get.find<GetFileFromGroupControllerImp>();
-    final DeleteFileControllerImp deleteFileControllerImp = Get.find<DeleteFileControllerImp>();
-    final CheckInControllerImp checkInControllerImp = Get.find<CheckInControllerImp>();
-    final DeleteGroupControllerImp deleteGroupControllerImp = Get.find<DeleteGroupControllerImp>();
-    final GetReportControllerImp getReportControllerImp = Get.find<GetReportControllerImp>();
+    final GetFileFromGroupControllerImp getFileFromGroupControllerImp =
+    Get.find<GetFileFromGroupControllerImp>();
+    final DeleteFileControllerImp deleteFileControllerImp =
+    Get.find<DeleteFileControllerImp>();
+    final CheckInControllerImp checkInControllerImp =
+    Get.find<CheckInControllerImp>();
+    final DeleteGroupControllerImp deleteGroupControllerImp =
+    Get.find<DeleteGroupControllerImp>();
+    final GetReportControllerImp getReportControllerImp =
+    Get.find<GetReportControllerImp>();
+    final CheckOutFileControllerImp checkOutFileControllerImp =
+    Get.find<CheckOutFileControllerImp>();
+
+    // final UpdateFileControllerImp updateFileControllerImp = Get.find<UpdateFileControllerImp>();
+    final DownloadFileControllerImp downloadFileControllerImp = Get.find<DownloadFileControllerImp>();
+
+    final GetStorage box = GetStorage(); // جلب المستخدم المخزن
 
     return Scaffold(
       appBar: AppBar(
@@ -58,7 +77,7 @@ class ViewGroup extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.refresh, color: Colors.white),
             onPressed: () {
-             filesId.clear();
+              filesId.clear();
               getFileFromGroupControllerImp.getFile(groupId);
             },
           ),
@@ -67,7 +86,10 @@ class ViewGroup extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             color: sevenBackColor,
             child: TextButton(
-              child: const Text("Reserved" , style: TextStyle(color: white),),
+              child: const Text(
+                "Reserved",
+                style: TextStyle(color: white),
+              ),
               onPressed: () {
                 checkInControllerImp.checkIn(filesId);
               },
@@ -90,7 +112,8 @@ class ViewGroup extends StatelessWidget {
                   value: 'Add User',
                   child: TextButton(
                     onPressed: () {
-                      Get.to(GetAllUserInSystem(groupId: groupId)); // تمرير groupId
+                      Get.to(GetAllUserInSystem(
+                          groupId: groupId)); // تمرير groupId
                     },
                     child: const Text("Add User"),
                   ),
@@ -99,7 +122,8 @@ class ViewGroup extends StatelessWidget {
                   value: 'Delete Group',
                   child: TextButton(
                     onPressed: () {
-                      deleteGroupControllerImp.deleteGroup(groupId); // حذف المجموعة مباشرة
+                      deleteGroupControllerImp
+                          .deleteGroup(groupId); // حذف المجموعة مباشرة
                     },
                     child: const Text("Delete Group"),
                   ),
@@ -108,9 +132,19 @@ class ViewGroup extends StatelessWidget {
                   value: 'Leave Group',
                   child: TextButton(
                     onPressed: () {
-                    //  deleteGroupControllerImp.deleteGroup(groupId); // حذف المجموعة مباشرة
+                      final int? userId = box.read('id'); // قراءة userId
+                      if (userId != null) {
+                        final LeaveGroupControllerImp leaveController = Get.put(
+                          LeaveGroupControllerImp(
+                              leaveGroupData: LeaveGroupData(Crud())),
+                        );
+                        leaveController.leaveGroup(groupId, userId);
+                        Get.back();
+                      } else {
+                        Get.snackbar("Error", "User ID is missing.");
+                      }
                     },
-                    child: const Text("Leave Group"),
+                    child: const Text("Leave"),
                   ),
                 ),
               ];
@@ -126,11 +160,13 @@ class ViewGroup extends StatelessWidget {
                 await getFileFromGroupControllerImp.getFile(groupId);
               },
               child: Obx(() {
-                if (getFileFromGroupControllerImp.statusRequest.value == StatusRequest.loading) {
+                if (getFileFromGroupControllerImp.statusRequest.value ==
+                    StatusRequest.loading) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
-                } else if (getFileFromGroupControllerImp.statusRequest.value == StatusRequest.failure) {
+                } else if (getFileFromGroupControllerImp.statusRequest.value ==
+                    StatusRequest.failure) {
                   return Center(
                     child: Text('حدث خطأ أثناء تحميل الملفات.'.tr),
                   );
@@ -149,46 +185,63 @@ class ViewGroup extends StatelessWidget {
                       final fileName = file['name'] ?? '';
                       final filePath = "http://127.0.0.1:8000${file['path'] ?? ''}";
                       final statusTitle = file['status']?['title'] ?? 'Unknown Status';
-
                       return ListTile(
                         title: Text(fileName),
-                        subtitle: Text('$statusTitle', style: const TextStyle(color: Colors.green)),
-                        leading: const Icon(Icons.picture_as_pdf, color: Colors.red),
+                        subtitle: Text('$statusTitle',
+                            style: const TextStyle(color: Colors.green)),
+                        leading:
+                        const Icon(Icons.picture_as_pdf, color: Colors.red),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Obx(() {
                               final isSelected = filesId.contains(fileId);
-
                               return Checkbox(
                                 value: isSelected,
                                 onChanged: (value) {
                                   if (value == true && fileId != null) {
-                                    filesId.add(fileId); // إضافة ID الملف إلى المصفوفة
+                                    filesId.add(fileId);
                                   } else {
-                                    filesId.remove(fileId); // إزالة ID الملف من المصفوفة
+                                    filesId.remove(fileId);
                                   }
                                 },
                               );
                             }),
+                            const SizedBox(width: 20),
+                            TextButton(
+                              onPressed: () {
+                                final int? userId = box.read('id');
+                                if (userId != null) {
+                                  checkOutFileControllerImp.checkOutFile(
+                                      fileId: fileId, userId: userId);
+                                } else {
+                                  Get.snackbar("Error", "User ID is missing.");
+                                }
+                              },
+                              child: const Text("check out"),
+                            ),
+                            const SizedBox(width: 20),
                             IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () async {
-                                await deleteFileControllerImp.deleteFile2(fileId);
-                                await getFileFromGroupControllerImp.getFile(groupId);
+                              icon:const Icon(Icons.edit, color: Colors.orange),
+                              onPressed: () => updateFileHandler(fileId, groupId),
+                            ),
+                            const SizedBox(width: 20),
+                            IconButton(
+                              icon: const Icon(Icons.arrow_circle_down_outlined, color: Colors.orange),
+                              onPressed: () {
+                                downloadFileControllerImp.downloadAndSaveFile(fileId);
                               },
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.report_gmailerrorred_outlined, color: Colors.black),
-                              onPressed: () async {
-                                await getReportControllerImp.getReport(groupId);
-                              },
-                            ),
+
                           ],
                         ),
                         onTap: () {
                           print("File path tapped: $filePath");
-                          Get.to(() => PdfViewerScreen(pdfPath: filePath));
+                          Get.to(() => PdfViewerScreen(
+                            pdfPath: filePath,
+                            fileId: fileId,
+                            groupId: groupId,
+                          ));
                         },
                       );
                     },
@@ -277,4 +330,109 @@ class ViewGroup extends StatelessWidget {
 
     return completer.future;
   }
+
+  Future<void> updateFileHandler(int fileId, int groupId) async {
+    var box = GetStorage();
+    final int? userId = box.read('id'); // قراءة `userId`
+    if (userId != null) {
+      if (kIsWeb) {
+        // رفع الملفات للويب
+        html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
+        uploadInput.accept = '*/*';
+        uploadInput.click();
+
+        uploadInput.onChange.listen((event) async {
+          final files = uploadInput.files;
+          if (files != null && files.isNotEmpty) {
+            final html.File file = files.first;
+
+            // قراءة محتوى الملف
+            final reader = html.FileReader();
+            reader.readAsArrayBuffer(file);
+
+            reader.onLoadEnd.listen((e) async {
+              final fileBytes = reader.result as Uint8List;
+              await updateFileControllerImp.updateFile(
+                fileId: fileId,
+                userId: userId,
+                fileBytes: fileBytes,
+                fileName: file.name,
+              );
+            });
+          } else {
+            Get.snackbar("No File Selected", "Please select a file to upload.");
+          }
+        });
+      } else {
+        // رفع الملفات للمنصات الأخرى
+        final result = await FilePicker.platform.pickFiles(type: FileType.any);
+        if (result != null && result.files.single.path != null) {
+          final filePath = result.files.single.path!;
+          final fileName = result.files.single.name;
+          final fileBytes = await File(filePath).readAsBytes();
+          await updateFileControllerImp.updateFile(
+            fileId: fileId,
+            userId: userId,
+            fileBytes: fileBytes,
+            fileName: fileName,
+          );
+        } else {
+          Get.snackbar("No File Selected", "Please select a file to upload.");
+        }
+      }
+    } else {
+      Get.snackbar("Error", "User ID is missing.");
+    }
+  }
+
+
+  // Future<File?> pickFile() async {
+  //   if (kIsWeb) {
+  //     // رفع الملفات للويب
+  //     final html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
+  //     uploadInput.accept = '*/*'; // قبول جميع أنواع الملفات
+  //     uploadInput.click();
+  //
+  //     final completer = Completer<Uint8List?>();
+  //
+  //     uploadInput.onChange.listen((event) {
+  //       final files = uploadInput.files;
+  //       if (files != null && files.isNotEmpty) {
+  //         final html.File webFile = files.first;
+  //
+  //         // قراءة محتوى الملف كـ Uint8List
+  //         final reader = html.FileReader();
+  //         reader.readAsArrayBuffer(webFile);
+  //
+  //         reader.onLoadEnd.listen((event) {
+  //           completer.complete(reader.result as Uint8List?);
+  //         });
+  //
+  //         reader.onError.listen((error) {
+  //           completer.completeError(error);
+  //         });
+  //       } else {
+  //         completer.complete(null); // لم يتم اختيار ملف
+  //       }
+  //     });
+  //
+  //     final Uint8List? fileBytes = await completer.future;
+  //
+  //     if (fileBytes != null) {
+  //       // يمكنك الآن استخدام البيانات مباشرة
+  //       return File.fromRawPath(fileBytes); // هنا التعديل يعتمد على الطريقة التي تحتاجها
+  //     } else {
+  //       return null;
+  //     }
+  //   } else {
+  //     // خاص بالمنصات الأخرى
+  //     final result = await FilePicker.platform.pickFiles(type: FileType.any);
+  //
+  //     if (result != null && result.files.single.path != null) {
+  //       return File(result.files.single.path!); // إرجاع الملف ككائن File
+  //     }
+  //     return null; // لم يتم اختيار ملف
+  //   }
+  // }
+
 }

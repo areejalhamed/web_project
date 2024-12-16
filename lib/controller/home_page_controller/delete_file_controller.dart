@@ -6,6 +6,7 @@ import '../../core/class/staterequest.dart';
 import '../../core/function/handlingdata.dart';
 import '../../data/dataresource/home_page_data/add_groug_data.dart';
 import '../../data/dataresource/home_page_data/delete_file_data.dart';
+import '../../view/screen/home_page/view_Group.dart';
 
 abstract class DeleteFileController extends GetxController {
   deleteFile(int id);
@@ -31,7 +32,6 @@ class DeleteFileControllerImp extends GetxController {
       statusRequest = handlingData(response);
 
       if (statusRequest == StatusRequest.success) {
-        print("Response data: $response");
         Get.snackbar("", "${response}");
       } else {
         print("فشل الحذف: $response");

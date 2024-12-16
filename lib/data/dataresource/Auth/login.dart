@@ -9,7 +9,7 @@ class LoginData {
     var response = await crud.post(Applink.login, {
       "email": email,
       "password": password,
-    });
+    }, headers: {});
 
     return response.fold((l) => l, (r) => r);
   }

@@ -10,7 +10,7 @@ class RegisterData {
       "name": name,
       "email": email,
       "password": password,
-    });
+    }, headers: {});
 
     return response.fold((l) => l, (r) => r);
   }

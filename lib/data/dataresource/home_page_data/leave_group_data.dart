@@ -5,34 +5,48 @@ import '../../../core/class/crud.dart';
 import '../../../core/class/staterequest.dart';
 
 class LeaveGroupData {
+
   final Crud client;
   final box = GetStorage();
 
   LeaveGroupData(this.client);
 
-  Future<Either<StatusRequest, List<Map<String, dynamic>>>> get(int groupId , int userId) async {
-    String? token = box.read('token');
+  Future leave(int groupId, int userId) async {
+    String? token = GetStorage().read('token');
+    if (token == null) {
+      throw Exception("Token not found in GetStorage.");
+    }
+
     print('Loaded token: $token');
 
-    var headers = {
-      'Accept': '*/*',
-      'Authorization': 'Bearer $token',
-    };
-
-    var response = await client.get(
-      "${Applink.url}/leave/$userId/$groupId",
-      headers: headers,
-    );
-
-    if (response.isRight()) {
-      // تحقق أن الاستجابة بالفعل قائمة من العناصر
-      List<dynamic> responseData = response.getOrElse(() => []);
-
-      // تحويل البيانات إلى قائمة من الخريطة
-      List<Map<String, dynamic>> users = List<Map<String, dynamic>>.from(responseData);
-      return Right(users);
-    } else {
+    // التحقق من وجود groupId و userId
+    if (groupId <= 0 || userId <= 0) {
+      print("Invalid groupId or userId");
       return const Left(StatusRequest.failure);
     }
+
+    // بناء رابط الطلب
+    String url = "${Applink.url}/leave/$userId/$groupId";
+    print('Request URL: $url');
+
+    var headers = {
+      'Authorization': 'Bearer $token',
+      'Accept': '*/*',
+    };
+
+    // إرسال الطلب باستخدام postWithToken
+    var response = await client.get(url, headers: headers);
+
+    // التعامل مع الاستجابة
+    return response.fold(
+          (failure) {
+        print("Leave group failed: $failure");
+        return const Left(StatusRequest.failure);
+      },
+          (success) {
+        print("Leave group successful: $success");
+        return Right(success);
+      },
+    );
   }
 }

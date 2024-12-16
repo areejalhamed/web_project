@@ -15,8 +15,7 @@ class GetReport extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    // وضع الـ GetReportController داخل الـ Get.put() لتخصيصه بالـ fileId
-    final GetReportControllerImp getReportControllerImp = Get.put(GetReportControllerImp(GetReportData(Crud()), groupId));
+    final GetReportControllerImp getReportControllerImp = Get.put(GetReportControllerImp(GetReportData(Crud())));
 
     return Scaffold(
       appBar: AppBar(
@@ -38,11 +37,11 @@ class GetReport extends StatelessWidget {
               child: const Text("Error loading reports. Retry?"),
             ),
           );
-        } else if (getReportControllerImp.users.isNotEmpty) {
+        } else if (getReportControllerImp.report.isNotEmpty) {
           return ListView.builder(
-            itemCount: getReportControllerImp.users.length,
+            itemCount: getReportControllerImp.report.length,
             itemBuilder: (context, index) {
-              final report = getReportControllerImp.users[index];
+              final report = getReportControllerImp.report[index];
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 padding: const EdgeInsets.all(10),

@@ -2,13 +2,13 @@ import 'package:get_storage/get_storage.dart';
 import 'package:project/core/class/crud.dart';
 import '../../../applink.dart';
 
-class AddGroupData {
+class CheckOutFileData {
   final Crud client;
   final box = GetStorage();
 
-  AddGroupData(this.client);
+  CheckOutFileData(this.client);
 
-  Future postMultipart(String name, String imageUrl) async {
+  Future postMultipart({required int fileId, required int userId}) async {
     String? token = box.read('token');
     print('Loaded token: $token');
 
@@ -16,18 +16,12 @@ class AddGroupData {
       'Accept': '*/*',
       'Authorization': 'Bearer $token',
     };
-    var fields = {
-      'name': name,
-      'image': imageUrl,
-    };
 
     var response = await client.postMultipart(
-      Applink.addGroup,
-      fields: fields,
+      "${Applink.url}/files/$fileId/check-out/$userId",
       headers: headers,
     );
 
     return response;
   }
-
 }

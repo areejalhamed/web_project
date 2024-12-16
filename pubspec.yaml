@@ -37,9 +37,10 @@ dependencies:
   get:
   get_storage:
   file_picker:
-  path_provider:
+  path_provider: ^2.1.5
   provider: ^6.0.0
   image_picker:
+  html:
   dio:
   syncfusion_flutter_pdfviewer:
   http: ^0.13.5

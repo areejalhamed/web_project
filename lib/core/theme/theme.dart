@@ -11,10 +11,8 @@ ThemeData lightMode = ThemeData(
     secondary: fourBackColor,
     tertiary: secondBackColor,
     tertiaryContainer: sixBackColor,
-    tertiaryFixed: green,
-    tertiaryFixedDim: Colors.grey[200],
-    scrim: fiveBackColor,
-
+    //tertiaryFixed: green,
+    //tertiaryFixedDim: Colors.grey[200],
   ),
 );
 
@@ -27,9 +25,8 @@ ThemeData darkMode = ThemeData(
     secondary: Colors.grey.shade600,
     tertiary: Colors.grey.shade200,
     tertiaryContainer: Colors.grey.shade300,
-    tertiaryFixed: Colors.grey.shade700,
-    tertiaryFixedDim: Colors.grey[600],
-    scrim: Colors.grey.shade400,
+    //tertiaryFixed: Colors.grey.shade700,
+    //tertiaryFixedDim: Colors.grey[600],
 
   ),
 );

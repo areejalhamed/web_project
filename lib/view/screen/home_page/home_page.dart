@@ -2,20 +2,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project/core/constant/routes.dart';
+import 'package:project/data/dataresource/home_page_data/check_out_file_data.dart';
 import 'package:project/data/dataresource/home_page_data/delete_file_data.dart';
+import 'package:project/data/dataresource/home_page_data/download_file_data.dart';
 import 'package:project/data/dataresource/home_page_data/get_report_dara.dart';
+import 'package:project/data/dataresource/home_page_data/update_file_data.dart';
 import 'package:project/view/screen/home_page/view_Group.dart';
 import '../../../controller/home_page_controller/check_in_controller.dart';
+import '../../../controller/home_page_controller/check_out_file_controller.dart';
 import '../../../controller/home_page_controller/delete_file_controller.dart';
+import '../../../controller/home_page_controller/download_file_controller.dart';
 import '../../../controller/home_page_controller/get_group_controller.dart';
 import '../../../controller/home_page_controller/get_report_controller.dart';
 import '../../../controller/home_page_controller/search_user_name_controller.dart';
+import '../../../controller/home_page_controller/update_file_controller.dart';
 import '../../../core/class/crud.dart';
 import '../../../core/class/staterequest.dart';
 import '../../../data/dataresource/home_page_data/check_in_data.dart';
 import '../../../data/dataresource/home_page_data/get_group_data.dart';
 import '../../../data/dataresource/home_page_data/search_user_name_data.dart';
 import 'drawer.dart';
+import 'getalluserinsystem.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -36,8 +43,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    // Load groups dynamically
-    groupController.getGroup();
 
     // Listen to the status of group fetching and initialize CheckInControllerImp dynamically for each group
     groupController.statusRequest.listen((status) {
@@ -48,14 +53,17 @@ class _HomePageState extends State<HomePage> {
           // Ensure that the controller is initialized for the group if not already
           if (!Get.isRegistered<CheckInControllerImp>()) {
             Get.put(CheckInControllerImp(CheckInData(Crud()), groupId));
-            Get.lazyPut(() => GetReportControllerImp(GetReportData(Crud()), groupId));
-
+            Get.lazyPut(() => GetReportControllerImp(GetReportData(Crud())));
+            Get.lazyPut(()=>CheckOutFileControllerImp(CheckOutFileData(Crud())));
           }
+          Get.lazyPut(()=>UpdateFileControllerImp(UpdateFileData()));
+          // Get.lazyPut(()=>DownloadFileControllerImp());
         }
       }
     });
-
     Get.put(DeleteFileControllerImp(DeleteFileData(Crud())));
+    Get.lazyPut(()=>DownloadFileControllerImp(DownloadFileData()));
+
   }
 
 
@@ -111,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             onPressed: () {
-                              Get.toNamed(AppRoute.getAllUser);
+                              Get.to(const GetAllUserInSystem2());
                             },
                           ),
                           // Refresh button
@@ -186,7 +194,7 @@ class _HomePageState extends State<HomePage> {
                         return Container(
                           padding: const EdgeInsets.all(12.0),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.tertiaryFixed,
+                            //color: Theme.of(context).colorScheme.tertiaryFixed,
                             borderRadius: BorderRadius.circular(10),
                             boxShadow: [
                               BoxShadow(
@@ -282,7 +290,7 @@ class _HomePageState extends State<HomePage> {
                       },
                     );
                   }),
-                )
+                ),
               ],
             ),
           ),
