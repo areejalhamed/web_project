@@ -15,59 +15,39 @@ class CheckInControllerImp extends CheckInController {
   CheckInControllerImp(this.checkInData, this.groupId);
 
   @override
-  void onInit() {
-    super.onInit();
-  }
-
-  @override
   Future<void> checkIn(List<int> fileIds) async {
     statusRequest = StatusRequest.loading;
     update();
 
     try {
-      // Call the postMultipart function to get the response
+      // إرسال الطلب واستقبال الاستجابة
       var response = await checkInData.postMultipart(fileIds, groupId);
 
-      // Check if the response is a 'Right' containing the actual data
-      if (response is Right) {
-        var responseData = response.value; // Access the data inside 'Right'
+      print("Response type: ${response.runtimeType}");
+      print("Response: $response");
 
-        if (responseData is Map && responseData.containsKey('message')) {
-          String message = responseData['message']; // Extract the message
+      // التحقق من هيكل الاستجابة
+      if (response is Map && response.containsKey('message')) {
+        String message = response['message'];
 
-          // If the message is "Files reserved successfully", show a success message
-          if (message == "Files reserved successfully") {
-            statusRequest = StatusRequest.success;
-            Get.snackbar("Success", message); // Display success message
-            print("Response: $responseData");
-          }
-          // If the message indicates files are already reserved or taken
-          else if (message == "One or more files are already reserved or taken") {
-            statusRequest = StatusRequest.failure;
-            Get.snackbar("Reservation Error", message); // Display reservation error message
-            print("Response error: $message");
-          } else {
-            // Handle any other server messages
-            statusRequest = StatusRequest.failure;
-            Get.snackbar("Error", message); // Display any other server message
-            print("Unexpected response: $responseData");
-          }
-        } else {
-          // If the response format is not as expected
+        if (message == "Files reserved successfully") {
+          statusRequest = StatusRequest.success;
+          Get.snackbar("Success", message); // رسالة نجاح
+        } else if (message == "One or more files are already reserved or taken") {
           statusRequest = StatusRequest.failure;
-          Get.snackbar("Error", "Unexpected response format.");
-          print("Unexpected response format: $response");
+          Get.snackbar("Reservation Error", message); // خطأ في الحجز
+        } else {
+          statusRequest = StatusRequest.failure;
+          Get.snackbar("Error", message); // رسالة خطأ أخرى
         }
       } else {
-        // In case the response is not of type 'Right', handle it as an error
         statusRequest = StatusRequest.failure;
-        Get.snackbar("Error", "Unexpected response received.");
-        print("Unexpected response: $response");
+        Get.snackbar("Error", "Unexpected response format.");
       }
     } catch (e) {
-      // Handle any exceptions during the request
+      // معالجة الاستثناءات
       statusRequest = StatusRequest.failure;
-      print("Error occurred: $e");
+      print("Error: $e");
       Get.snackbar("Error", "An unexpected error occurred.");
     } finally {
       update();

@@ -7,6 +7,7 @@ class AppRoute {
   static const String searchpage = "/searchpage";
   static const String drawerpage = "/drawerpage";
   static const String getMyGroup = "/getMyGroups";
+  static const String diffPage = "/diffPage";
 
 
 }

@@ -42,8 +42,10 @@ class AddFileToGroupControllerImp extends AddFileToGroupController {
 
       statusRequest = handlingData(response);
       if (statusRequest == StatusRequest.success) {
+        print("31".tr);
         Get.snackbar("30".tr, "31".tr, backgroundColor: Colors.green, colorText: Colors.white);
       } else {
+        print("33".tr);
         Get.snackbar("32".tr, "33".tr, backgroundColor: Colors.red, colorText: Colors.white);
       }
     } catch (e) {

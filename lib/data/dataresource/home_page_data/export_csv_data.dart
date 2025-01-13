@@ -1,11 +1,11 @@
 import 'package:get_storage/get_storage.dart';
+import 'package:project/core/class/crud.dart';
 import '../../../applink.dart';
-import '../../../core/class/crud.dart';
 
-class GetReportData {
+class ExportCsvData {
   final Crud client;
 
-  GetReportData(this.client);
+  ExportCsvData(this.client);
 
   Future get(int groupId) async {
     String? token = GetStorage().read('token');
@@ -15,13 +15,20 @@ class GetReportData {
 
     var headers = {
       'Authorization': 'Bearer $token',
-      'Accept': 'application/json',
+      'Accept': '*/*',
     };
 
     try {
-      var response = await client.get('${Applink.url}/reports/$groupId', headers: headers);
-      print("Response Body: ${response}");
-      return response;
+      var response = await client.get('${Applink.url}/exportCSV/$groupId', headers: headers);
+
+      // فك استجابة Either
+      return response.fold(
+            (left) => throw Exception("Request failed: $left"),
+            (right) {
+          print("Response Body: $right");
+          return right;
+        },
+      );
     } catch (e) {
       print("Error in get request: $e");
       return {'status': false, 'message': 'Error occurred during request'};

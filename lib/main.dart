@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -21,23 +23,37 @@ import 'data/dataresource/home_page_data/check_out_file_data.dart';
 import 'data/dataresource/home_page_data/delete_group_data.dart';
 import 'data/dataresource/home_page_data/get_group_data.dart';
 import 'data/dataresource/home_page_data/update_file_data.dart';
-import 'dart:typed_data';
+import 'firebase_notification.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
+  // // التأكد من تهيئة Flutter
   WidgetsFlutterBinding.ensureInitialized();
-  Get.lazyPut(() => Crud());
-  Get.put(GetAllGroupData(Get.find()));
-  Get.lazyPut(() => AddGroupControllerImp(AddGroupData(Get.find())));
-  Get.put(AddFileToGroupData());
-  Get.put(DeleteGroupControllerImp(DeleteGroupData(Get.find())));
-  Get.lazyPut(()=>CheckOutFileControllerImp(CheckOutFileData(Crud())));
-  Get.lazyPut(()=>UpdateFileControllerImp(UpdateFileData()));
-  // Get.put(CheckInControllerImp(CheckInData(Crud()))) ;
+  await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseMessaging.instance;
+  NotificationHome notificationHome = new NotificationHome();
+
+   notificationHome.requestNotificationPermission();
+
+
+
+  // الحصول على التوكن وطباعة
+  String? token = await FirebaseMessaging.instance.getToken();
+  print("FCM Token: $token");
+
+  setupDependencies();
+
+  // تهيئة SharedPreferences
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   await Get.putAsync(() async => MyLocaleController(sharedPreferences));
   Get.put(sharedPreferences);
-  await initialServices();
+
+  // تهيئة GetStorage
   await GetStorage.init();
+
+  // تشغيل التطبيق
   runApp(
     ChangeNotifierProvider(
       create: (context) => ThemeProvider(),
@@ -46,6 +62,19 @@ Future<void> main() async {
   );
 }
 
+// دالة لتسجيل الاعتماديات
+void setupDependencies() {
+  Get.lazyPut(() => Crud());
+  Get.put(GetAllGroupData(Get.find()));
+  Get.lazyPut(() => AddGroupControllerImp(AddGroupData(Get.find())));
+  Get.put(AddFileToGroupData());
+  Get.put(DeleteGroupControllerImp(DeleteGroupData(Get.find())));
+  Get.lazyPut(() => CheckOutFileControllerImp(CheckOutFileData(Crud())));
+  Get.lazyPut(() => UpdateFileControllerImp(UpdateFileData()));
+  Get.lazyPut(()=>MyServices());
+}
+
+// تطبيق Flutter الرئيسي
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -57,10 +86,8 @@ class MyApp extends StatelessWidget {
       translations: MyLocal(),
       home: Loginpage(),
       initialBinding: initalBindings(),
-      getPages: routes ,
+      getPages: routes,
       theme: Provider.of<ThemeProvider>(context).currentTheme,
     );
   }
 }
-
-//  color: Theme.of(context).colorScheme.primaryContainer,

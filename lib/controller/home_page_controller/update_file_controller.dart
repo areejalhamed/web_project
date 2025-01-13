@@ -7,9 +7,9 @@ import 'package:project/data/dataresource/home_page_data/update_file_data.dart';
 abstract class UpdateFileController extends GetxController {
   Future<void> updateFile({
     required int fileId,
-    required int userId,
     required Uint8List fileBytes,
-    required String fileName,  });
+    required String fileName,
+  });
 }
 
 class UpdateFileControllerImp extends UpdateFileController {
@@ -21,7 +21,6 @@ class UpdateFileControllerImp extends UpdateFileController {
   @override
   Future<void> updateFile({
     required int fileId,
-    required int userId,
     required Uint8List fileBytes,
     required String fileName,
   }) async {
@@ -31,7 +30,6 @@ class UpdateFileControllerImp extends UpdateFileController {
     try {
       var response = await updateFileData.postMultipart(
         fileId: fileId,
-        userId: userId,
         fileBytes: fileBytes,
         fileName: fileName,
       );

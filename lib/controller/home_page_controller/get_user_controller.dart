@@ -5,7 +5,7 @@ import '../../core/function/handlingdata.dart';
 import '../../data/dataresource/home_page_data/get_user_data.dart';
 
 abstract class GetUserController extends GetxController {
-  getUser(int groupId); // تعديل هنا لإضافة المعلمة
+  getUser(int groupId);
 }
 
 class GetUserControllerImp extends GetUserController {
@@ -17,7 +17,7 @@ class GetUserControllerImp extends GetUserController {
   var users = <Map<String, dynamic>>[].obs;
 
   GetUserControllerImp(this.getGroupData ,  int initialGroupId){
-    groupId(initialGroupId); // تعيين المجموعة الأولى عند الإنشاء
+    groupId(initialGroupId);
 
   }
 

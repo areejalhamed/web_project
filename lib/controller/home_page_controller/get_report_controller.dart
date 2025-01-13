@@ -4,50 +4,63 @@ import '../../core/class/staterequest.dart';
 import '../../core/function/handlingdata.dart';
 import '../../data/dataresource/home_page_data/get_report_dara.dart';
 import '../../data/dataresource/home_page_data/get_user_data.dart';
-import '../../view/screen/home_page/get_report.dart';
 
 abstract class GetReportController extends GetxController {
-  getReport(int groupId); // تعديل هنا لإضافة المعلمة
+  getUser(int groupId);
 }
 
 class GetReportControllerImp extends GetReportController {
-
   final GetReportData getReportData;
-  var fileId = 0.obs;
+
+  var groupId = 0.obs;
+
   var statusRequest = StatusRequest.loading.obs;
-  var report = <Map<String, dynamic>>[].obs;
+  var users = <Map<String, dynamic>>[].obs;
 
-  GetReportControllerImp(this.getReportData);
+  GetReportControllerImp(this.getReportData ,  int initialGroupId){
+    groupId(initialGroupId);
 
-  @override
-  void onInit() {
-    super.onInit();
-    getReport(fileId.value);
   }
 
   @override
-  Future<void> getReport(int groupId) async {
+  void onInit() {
+    ever(groupId, (int groupId) {
+      getUser(groupId);
+    });
+    getUser(groupId.value);
+  }
 
+  @override
+  Future<void> getUser(int groupId) async {
     statusRequest(StatusRequest.loading);
     update();
 
     try {
+      print("Fetching users for group ID: $groupId");
       var response = await getReportData.get(groupId);
+      print("Response: $response");
 
-      statusRequest.value = handlingData(response);
-      if (statusRequest.value == StatusRequest.success) {
-        if (response.isRight()) {
-          report.value = response.getOrElse(() => []); // Update groups value
-          // print("report data in controller: $report");
-          Get.snackbar("Success", "success to fetch report.");
-        }
+      if (response == null) { // إصلاح: تحقق من أن response غير فارغة
+        Get.snackbar("Error", "Failed to load users. Null response.");
+        statusRequest(StatusRequest.failure);
+        update(); // تحديث الواجهة.
+        return;
+      }
+
+      statusRequest(handlingData(response));
+      if (statusRequest.value == StatusRequest.success && response.isRight()) {
+        users.assignAll(response.getOrElse(() => []));
+        print("User data in controller: $users");
+        Get.snackbar("Success", "User fetched successfully");
       } else {
-        Get.snackbar("Error", "Failed to fetch report.");
+        Get.snackbar("Error", "Failed to load users.");
       }
     } catch (e) {
       print("Error occurred: $e");
-      Get.snackbar("Error", "An error occurred while fetching the groups.");
-      statusRequest.value = StatusRequest.failure;
+      Get.snackbar("Error", "An error occurred while fetching the users.");
+      statusRequest(StatusRequest.failure);
+    } finally {
+      update();
     }
   }
 }

@@ -1,0 +1,14 @@
+{
+  "flutter": {
+    "platforms": {
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "notificatios-web",
+          "configurations": {
+            "web": "1:68892861323:web:6934554389673ba24f458e"
+          }
+        }
+      }
+    }
+  }
+}

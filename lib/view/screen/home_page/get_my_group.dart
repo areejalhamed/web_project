@@ -22,6 +22,8 @@ class GetMyGroups extends StatelessWidget {
       GetGroupForUserControllerImp(GetGroupForUserData(Crud())),
     );
 
+    // Get.put(CheckInControllerImp(CheckInData(Crud()) , ));
+
     // if (!Get.isRegistered<CheckInControllerImp>()) {
     //   Get.lazyPut(() => CheckInControllerImp(CheckInData(Crud()), groupId));
     // }
@@ -96,6 +98,7 @@ class GetMyGroups extends StatelessWidget {
                   onTap: () {
                     final groupName = group['name'] ?? 'بدون اسم';
                     final groupId = group['id'];
+                    Get.put(CheckInControllerImp(CheckInData(Crud()) , groupId));
                     Get.to(() => ViewGroup(
                       groupName: groupName,
                       groupId: groupId,

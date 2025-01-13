@@ -1,9 +1,5 @@
-import 'dart:convert';
 import 'package:get_storage/get_storage.dart';
 import 'package:project/core/class/crud.dart';
-import 'package:project/core/class/staterequest.dart';
-import 'package:dartz/dartz.dart';
-
 import '../../../applink.dart';
 
 class SearchUserNameData {
@@ -12,19 +8,16 @@ class SearchUserNameData {
 
   SearchUserNameData(this.client);
 
-  Future postMultipart(String name , int userId) async {
+  Future postMultipart(String url, {Map<String, String>? fields}) async {
     String? token = box.read('token');
     print('Loaded token: $token');
     var headers = {
       'Accept': '*/*',
       'Authorization': 'Bearer $token',
     };
-    var fields = {
-      'name': name,
-    };
 
     var response = await client.postMultipart(
-      "${Applink.searchUsersName}/$userId",
+      url,
       fields: fields,
       headers: headers,
     );

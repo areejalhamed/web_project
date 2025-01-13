@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
           // Ensure that the controller is initialized for the group if not already
           if (!Get.isRegistered<CheckInControllerImp>()) {
             Get.put(CheckInControllerImp(CheckInData(Crud()), groupId));
-            Get.lazyPut(() => GetReportControllerImp(GetReportData(Crud())));
+            Get.lazyPut(() => GetReportControllerImp(GetReportData(Crud()) , groupId));
             Get.lazyPut(()=>CheckOutFileControllerImp(CheckOutFileData(Crud())));
           }
           Get.lazyPut(()=>UpdateFileControllerImp(UpdateFileData()));

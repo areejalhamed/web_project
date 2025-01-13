@@ -5,7 +5,6 @@ import '../../core/function/handlingdata.dart';
 
 abstract class GetAllGroupController extends GetxController {
   getGroup();
-  searchGroup(String groupName); // تعريف تابع البحث
 }
 
 class GetAllGroupControllerImp extends GetAllGroupController {
@@ -45,18 +44,4 @@ class GetAllGroupControllerImp extends GetAllGroupController {
     }
   }
 
-  @override
-  Future<void> searchGroup(String groupName) async {
-    if (groupName.isEmpty) {
-      searchResults.clear(); // مسح النتائج عند حذف النص
-      return;
-    }
-
-    // فلترة النتائج محليًا بناءً على الاسم
-    searchResults.value = groups
-        .where((group) =>
-    group['name'] != null &&
-        group['name'].toString().toLowerCase().contains(groupName.toLowerCase()))
-        .toList();
-  }
 }

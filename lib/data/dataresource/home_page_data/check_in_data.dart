@@ -43,15 +43,17 @@ class CheckInData {
 
       if (response is String) {
         try {
-          var jsonResponse = jsonDecode(response as String); // Decoding response if it's a string
+          var jsonResponse = jsonDecode(response as String);
           print("Decoded JSON response: $jsonResponse");
           return jsonResponse;
         } catch (e) {
           print("Failed to decode JSON: $e");
           return {"status": "error", "message": "Invalid response format."};
         }
+      } else if (response is Map<String, dynamic>) {
+        return response;
       } else {
-        return response; // Return the response directly if it's already a map
+        return {"status": "error", "message": "Unexpected response type."};
       }
     } catch (e) {
       print("Exception in post request: $e");

@@ -1,9 +1,11 @@
-import 'dart:typed_data';
+import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
+import 'package:project/data/dataresource/home_page_data/compare_file_data.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import '../../../controller/home_page_controller/compare_file_controller.dart';
 import '../../../controller/home_page_controller/delete_file_controller.dart';
+import '../../../core/class/crud.dart';
 import '../../../core/constant/color.dart';
 import '../../screen/home_page/get_report.dart';
 
@@ -20,7 +22,6 @@ class PdfViewerScreen extends StatefulWidget {
 }
 
 class _PdfViewerScreenState extends State<PdfViewerScreen> {
-  Uint8List? pdfBytes;
   bool isLoading = true;
 
   final int groupId;
@@ -30,42 +31,12 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
   @override
   void initState() {
     super.initState();
-    loadPdf(widget.pdfPath);
-  }
-
-  Future<void> loadPdf(String url) async {
-    try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        setState(() {
-          pdfBytes = response.bodyBytes;
-          isLoading = false;
-        });
-      } else {
-        throw Exception("Failed to load PDF. Status: ${response.statusCode}");
-      }
-    } catch (e) {
-      print("Error loading PDF: $e");
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('خطأ في تحميل الملف'),
-          content: Text('حدث خطأ أثناء تحميل الملف: $e'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('موافق'),
-            ),
-          ],
-        ),
-      );
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final DeleteFileControllerImp deleteFileControllerImp =
-    Get.find<DeleteFileControllerImp>();
+    final DeleteFileControllerImp deleteFileControllerImp = Get.find<DeleteFileControllerImp>();
+    CompareFileControllerImp compareFileControllerImp = Get.put(CompareFileControllerImp(CompareFileData(Crud())));
 
     return Scaffold(
       appBar: AppBar(
@@ -87,13 +58,12 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                   ),
                 ),
                 PopupMenuItem(
-                  value: 'View Report',
+                  value: 'compare File',
                   child: TextButton(
-                    child: const Text("View Report"),
-                    onPressed: () async {
-                      print("groupId : $groupId");
-                      Get.to(() => GetReport(groupId: groupId));
+                    onPressed: () {
+                      compareFileControllerImp.compareFile(widget.fileId);
                     },
+                    child: const Text("compare File"),
                   ),
                 ),
               ];
@@ -101,11 +71,21 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
           ),
         ],
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : pdfBytes != null
-          ? SfPdfViewer.memory(pdfBytes!)
-          : const Center(child: Text("Failed to load PDF.")),
+      body: SfPdfViewer.network(
+        widget.pdfPath,
+        onDocumentLoaded: (details) {
+          setState(() {
+            isLoading = false;
+          });
+          print("PDF loaded successfully!");
+        },
+        onPageChanged: (error) {
+          setState(() {
+            isLoading = false;
+          });
+          print("Error loading PDF: $error"); // تأكد من طباعة الخطأ
+        },
+      ),
     );
   }
 }

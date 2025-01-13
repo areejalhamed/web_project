@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:project/data/dataresource/home_page_data/get_user_data.dart';
 import '../../../controller/home_page_controller/get_report_controller.dart';
 import '../../../core/class/crud.dart';
 import '../../../core/class/staterequest.dart';
@@ -14,14 +14,13 @@ class GetReport extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final GetReportControllerImp getReportControllerImp = Get.put(GetReportControllerImp(GetReportData(Crud())));
+    final GetReportControllerImp getReportControllerImp = Get.put(GetReportControllerImp(GetReportData(Crud()) , groupId));
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: sevenBackColor,
         title: const Text(
-          'Report',
+          'Reports',
           style: TextStyle(fontSize: 18),
         ),
       ),
@@ -32,16 +31,16 @@ class GetReport extends StatelessWidget {
           return Center(
             child: TextButton(
               onPressed: () {
-                getReportControllerImp.getReport(groupId);
+                getReportControllerImp.getUser(groupId);
               },
               child: const Text("Error loading reports. Retry?"),
             ),
           );
-        } else if (getReportControllerImp.report.isNotEmpty) {
+        } else if (getReportControllerImp.users.isNotEmpty) {
           return ListView.builder(
-            itemCount: getReportControllerImp.report.length,
+            itemCount: getReportControllerImp.users.length,
             itemBuilder: (context, index) {
-              final report = getReportControllerImp.report[index];
+              final report = getReportControllerImp.users[index];
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 padding: const EdgeInsets.all(10),
@@ -72,8 +71,6 @@ class GetReport extends StatelessWidget {
           );
         }
       }),
-
-
     );
   }
 }

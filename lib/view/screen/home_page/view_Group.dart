@@ -24,6 +24,7 @@ import '../../../core/constant/color.dart';
 import '../../../data/dataresource/home_page_data/get_file_from_group_data.dart';
 import '../../../data/dataresource/home_page_data/leave_group_data.dart';
 import '../../widget/home_page/view_pdf.dart';
+import 'get_report.dart';
 import 'get_user_all.dart';
 import 'get_user_all_in_system.dart';
 // import 'dart:typed_data';
@@ -46,7 +47,7 @@ class ViewGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     Get.lazyPut(() =>
         GetFileFromGroupControllerImp(GetFileFromGroupData(Crud()), groupId));
-    Get.lazyPut(() => GetReportControllerImp(GetReportData(Crud())));
+        Get.lazyPut(() => GetReportControllerImp(GetReportData(Crud()) , groupId));
 
     final GetFileFromGroupControllerImp getFileFromGroupControllerImp =
     Get.find<GetFileFromGroupControllerImp>();
@@ -147,6 +148,17 @@ class ViewGroup extends StatelessWidget {
                     child: const Text("Leave"),
                   ),
                 ),
+                PopupMenuItem(
+                  value: 'View Report',
+                  child: TextButton(
+                    child: const Text("View Report"),
+                    onPressed: () async {
+                      print("groupId : $groupId");
+                      Get.to(() => GetReport(groupId: groupId));
+                    },
+                  ),
+                ),
+
               ];
             },
           ),
@@ -223,7 +235,7 @@ class ViewGroup extends StatelessWidget {
                             const SizedBox(width: 20),
                             IconButton(
                               icon:const Icon(Icons.edit, color: Colors.orange),
-                              onPressed: () => updateFileHandler(fileId, groupId),
+                              onPressed: () => updateFileHandler(fileId),
                             ),
                             const SizedBox(width: 20),
                             IconButton(
@@ -331,7 +343,7 @@ class ViewGroup extends StatelessWidget {
     return completer.future;
   }
 
-  Future<void> updateFileHandler(int fileId, int groupId) async {
+  Future<void> updateFileHandler(int fileId) async {
     var box = GetStorage();
     final int? userId = box.read('id'); // قراءة `userId`
     if (userId != null) {
@@ -354,7 +366,6 @@ class ViewGroup extends StatelessWidget {
               final fileBytes = reader.result as Uint8List;
               await updateFileControllerImp.updateFile(
                 fileId: fileId,
-                userId: userId,
                 fileBytes: fileBytes,
                 fileName: file.name,
               );
@@ -372,7 +383,6 @@ class ViewGroup extends StatelessWidget {
           final fileBytes = await File(filePath).readAsBytes();
           await updateFileControllerImp.updateFile(
             fileId: fileId,
-            userId: userId,
             fileBytes: fileBytes,
             fileName: fileName,
           );
